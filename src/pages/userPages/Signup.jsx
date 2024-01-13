@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import meta from "../../assets/images/web.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { UserSendingOtp, userSignUp } from "../../api/userApi";
-import { useDispatch } from "react-redux";
-import { setUserDetailes } from "../../Redux/userSlice/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 function Signup() {
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState(true);
   let [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -27,27 +25,46 @@ function Signup() {
       [name]: value,
     });
   };
-  const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+ 
     try {
-      if (formData.name.trim() === "" || formData.name === undefined) {
-        toast.error("Please enter your username");
-      } else if (formData.phone.trim() === "") {
-        toast.error("Please enter your phone number");
-      } else if (formData.credential.trim() === "") {
-        toast.error("Please enter your email");
-      } else if (formData.password.trim() === "") {
-        toast.error("Please enter your password");
+      if (
+        formData.name.trim() === "" ||
+        formData.phone.trim() === "" ||
+        formData.credential.trim() === "" ||
+        formData.password.trim() === ""
+      ) {
+        toast.error("Please fill in all required fields");
+        return;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.credential)) {
+        toast.error("Please enter a valid email address");
+        return;
+      } else if (formData.password.length < 8) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      } else if (!/[a-z]/.test(formData.password)) {
+        toast.error("Password must contain at least one lowercase letter");
+        return;
+      } else if (!/[A-Z]/.test(formData.password)) {
+        toast.error("Password must contain at least one uppercase letter");
+        return;
+      } else if (!/\d/.test(formData.password)) {
+        toast.error("Password must contain at least one number");
+        return;
+      } else if (
+        !/^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/.test(formData.phone)
+      ) {
+        toast.error("Please enter a valid phone number");
+        return;
       } else {
+        setLoading(true);
+        toast.success("Form submitted successfully!");
         const userData = await userSignUp(formData).then((res) => {
+          toast(res.data.alert);
           console.log(res);
           if (res.status === 201) {
             const dataOtp = { email: formData.credential };
-            console.log(dataOtp, "dataOtp");
-
             const tutorOtp = UserSendingOtp(dataOtp).then((res) => {
               console.log(res, "tutorOtp");
               if (res.status === 200) {
@@ -186,29 +203,21 @@ function Signup() {
                               xmlns="http://www.w3.org/2000/svg"
                               className="cursor-pointer"
                             >
-                              {!clicked ? (
-                                <FaEyeSlash onClick={() => setClicked(false)} />
-                              ) : (
-                                <FaRegEye onClick={() => setClicked(true)} />
-                              )}
+                             {clicked ? (
+                              <FaEyeSlash
+                                onClick={() => setClicked(false)}
+                              />
+                            ) : (
+                              <FaRegEye onClick={() => setClicked(true)} />
+                            )}
                             </svg>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  <div className="flex w-full h-fit justify-end items-center text-primary text-[13px] ">
-                    <span className="w-fit h-fit cursor-pointer">
-                      Forgot password?
-                    </span>
-                  </div>
-
                   <div className="flex flex-col items-center">
                     <button
-                      onClick={() => {
-                        setLoading(!loading);
-                      }}
                       className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"
                     >

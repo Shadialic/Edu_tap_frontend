@@ -3,8 +3,12 @@ import meta from "../../assets/images/web.gif";
 import "react-toastify/dist/ReactToastify.css";
 import ForgetPass from "../../components/forgetPass/ForgetPass";
 import LoginForm from "../../components/UserComponents/LoginForm";
+import PropagateLoader from "react-spinners/PropagateLoader";
+
 function Login() {
   const [isOpn, setOpn] = useState(false);
+  let [loading, setLoading] = useState(false);
+
 
   return (
     <>
@@ -25,7 +29,7 @@ function Login() {
               onClose={() => setOpn(false)}
             />
           )}
-          
+
           {isOpn && <ForgetPass />}
         </div>
       </div>

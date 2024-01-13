@@ -3,19 +3,16 @@ import { useNavigate } from "react-router-dom";
 import meta from "../../assets/images/teacher.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { TutorSendingOtp, TutorSignUp } from "../../api/VendorApi";
-import { useDispatch } from "react-redux";
-import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
-import {ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PropagateLoader from "react-spinners/PropagateLoader";
 // import Otp from "../../components/otp/Otp";
 
 function VendorSignUp() {
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [blurBackground, setBlurBackground] = useState(false);
+  const [blurBackground,setBlurBackground]=useState(false)
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     tutorName: "",
     email: "",
@@ -32,44 +29,58 @@ function VendorSignUp() {
       [name]: value,
     });
   };
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setFormData({
-  //     ...formData,
-  //     image: file,
-  //   });
-  // };
   const handleBlurBackground = () => {
     setBlurBackground(!blurBackground);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    handleBlurBackground(); 
-    if (formData.tutorName.trim() == "" || formData.tutorName === undefined) {
-      toast.error("Please enter your name");
-    } else if (formData.phone.trim() === "") {
-      toast.error("Please enter your phone number");
-    } else if (formData.email.trim() === "") {
-      toast.error("Please enter your email");
-    } else if (formData.password.trim() === "") {
-      toast.error("Please enter your password");
+
+    if (
+      formData.tutorName.trim() === "" ||
+      formData.phone.trim() === "" ||
+      formData.email.trim() === "" ||
+      formData.password.trim() === ""
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    } else if (formData.password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    } else if (!/[a-z]/.test(formData.password)) {
+      toast.error("Password must contain at least one lowercase letter");
+      return;
+    } else if (!/[A-Z]/.test(formData.password)) {
+      toast.error("Password must contain at least one uppercase letter");
+      return;
+    } else if (!/\d/.test(formData.password)) {
+      toast.error("Password must contain at least one number");
+      return;
+    } else if (
+      !/^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/.test(formData.phone)
+    ) {
+      toast.error("Please enter a valid phone number");
+      return;
     } else {
+      handleBlurBackground();
+      setLoading(true);
       const tutorData = await TutorSignUp(formData).then((res) => {
-        console.log(res,'dddddddeeeea11111111111111111aaa');
-        if (res.status===201) {
-         
-          const dataOtp={email:formData.email}
-          const Tutorotp=TutorSendingOtp(dataOtp).then((response)=>{
-                 if(response.status===200){
-                  navigate("/vendor/otp",{state:{type:"vendor"}});
-                 } else {
-                  toast(tutorData.data.alert);
-                }
-          })
+        toast(res.data.alert);
+        console.log(res, "dddddddeeeea11111111111111111aaa");
+        if (res.status === 201) {
+          const dataOtp = { email: formData.email };
+          const Tutorotp = TutorSendingOtp(dataOtp).then((response) => {
+      
+            if (response.status === 200) {
+              navigate("/vendor/otp", { state: { type: "vendor" } });
+            } else {
+              toast(tutorData.data.alert);
+            }
+          });
         }
       });
-     
     }
     console.log("Form submitted with data:", formData);
   };
@@ -86,8 +97,16 @@ function VendorSignUp() {
 
   return (
     <>
-      <div className={`bg-authentication-background bg-cover bg-gray-100 flex justify-center items-center w-screen h-screen py-7 px-5 sweet-loading ${blurBackground ? "backdrop-blur-md" : ""}`}>
-        <div className={`bg-white w-full sm:max-w-[80%] min-h-[100%] overflow-auto rounded-md flex justify-center items-center shadow-xl p-3 gap-5 flex-row ${blurBackground ? "backdrop-blur-lg" : ""}`}>
+      <div
+        className={`bg-authentication-background bg-cover bg-gray-100 flex justify-center items-center w-screen h-screen py-7 px-5 sweet-loading ${
+          blurBackground ? "backdrop-blur-md" : ""
+        }`}
+      >
+        <div
+          className={`bg-white w-full sm:max-w-[80%] min-h-[100%] overflow-auto rounded-md flex justify-center items-center shadow-xl p-3 gap-5 flex-row ${
+            blurBackground ? "backdrop-blur-lg" : ""
+          }`}
+        >
           <div className="justify-center items-center text-center hidden lg:flex flex-col lg:w-1/2 relative">
             <div className="font-semibold text-lg w-full">
               <span className="font-bold text-4xl">Edu-tap</span>
@@ -244,17 +263,16 @@ function VendorSignUp() {
                   </div>
 
                   <div className="flex flex-col items-center">
-                    <button  onClick={() => {
-                setLoading(!loading);
-                handleBlurBackground();
-              }}
+                    <button
                       className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"
                     >
                       SignUp
                     </button>
 
-                  {loading && <PropagateLoader  className="mt-3" color="#8b44ef" />}
+                    {loading && (
+                      <PropagateLoader className="mt-3" color="#8b44ef" />
+                    )}
                   </div>
                 </div>
               </form>

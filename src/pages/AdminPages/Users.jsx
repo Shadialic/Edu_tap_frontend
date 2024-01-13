@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/AdminComponents/Sidebar";
 import Navbar from "../../components/AdminComponents/Navbar";
-import { LoadUserList } from "../../api/adminApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { BlockUnblockuser, LoadUserList } from "../../api/adminApi";
 
 function Users() {
   const [user, setUser] = useState([]);
   const [search, setSearch] = useState("");
+  const [block, setBlock] = useState(false);
 
   useEffect(() => {
     LoadUserList()
@@ -19,6 +22,21 @@ function Users() {
       });
   }, []);
 
+  const handleblockuser = async (userId) => {
+    const data = { _id: userId };
+
+    console.log(data, "userid");
+    setBlock(true);
+    await BlockUnblockuser(data).then((res) => {
+      if (res.status == 200) {
+        toast(res.data.alert);
+        setBlock(true);
+      }
+    });
+  };
+  const handleUnblockuser = async () => {
+    setBlock(false);
+  };
   //=================== SEARCH INPUT HANDLER===========================//
 
   const handleSearchInput = (e) => {
@@ -52,7 +70,7 @@ function Users() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
                       Id
                     </p>
@@ -88,9 +106,9 @@ function Users() {
               <tbody>
                 {userDatas.map((values, index) => (
                   <tr key={values._id}>
-                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
-                        {index+1}
+                        {index + 1}
                         {/* ... content for the second row ... */}
                       </div>
                     </td>
@@ -112,12 +130,35 @@ function Users() {
                         {/* ... content for the fourth row ... */}
                       </div>
                     </td>
+                    <td className="py-3 px-5 border-b border-blue-gray-50">
+                      <td className="py-3 px-5 border-b border-blue-gray-50">
+                        {!block ? (
+                          <button
+                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
+                            data-projection-id="1"
+                            style={{ opacity: 1 }}
+                            onClick={() => handleblockuser(values._id)}
+                          >
+                            <span>Block</span>
+                          </button>
+                        ) : (
+                          <button
+                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
+                            data-projection-id="1"
+                            style={{ opacity: 1 }}
+                            onClick={handleUnblockuser}
+                          >
+                            <span>UnBlock</span>
+                          </button>
+                        )}
+                      </td>
+                    </td>
                     {/* ... other table cells ... */}
                   </tr>
                 ))}
-              
               </tbody>
             </table>
+            <ToastContainer />
           </div>
         </div>
       </div>

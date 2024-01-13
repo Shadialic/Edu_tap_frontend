@@ -33,3 +33,15 @@ export async function LoadTutorList(tutorData){
        console.log(error) 
     }
     }
+
+    export async function BlockUnblockuser(userData){
+        try {
+            console.log(userData,'u3333######3');
+            const admindata = await AdminApi.put('/blockuser',userData)
+            console.log(admindata,'admindata');
+            return admindata
+        } catch (error) {
+           console.log(error) 
+        }
+        }
+

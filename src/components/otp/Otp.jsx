@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import meta from "../../assets/images/web.gif";
-import Signup from "../../pages/vendorPages/VendorSignUp";
 import { TutorSendingOtp, TutorVerifyOtp } from "../../api/VendorApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -67,8 +66,10 @@ function Otp() {
     const data = { otp: otp };
 
     if (otp.length === 6) {
+      
       if (current.type == "forgot") {
         await passverifyOTP(data).then((res) => {
+         
           console.log(res, "??????????????");
           if (res.status == 200) {
             console.log(res, "????======");
@@ -87,8 +88,11 @@ function Otp() {
         });
       } else if (current.type == "vendor") {
         await TutorVerifyOtp(data).then((res) => {
+          toast(res.data.alert)
           console.log(res.data.tutor, "55555555555555555");
           if (res.status === 200) {
+          toast(res.data.alert)
+
             navigate("/vendor/login");
           } else if (res.status === 400) {
             toast.error("Wrong otp ");

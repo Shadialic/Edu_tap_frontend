@@ -36,7 +36,7 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+   
 
     try {
       if (formData.credential === "") {
@@ -44,6 +44,7 @@ function LoginForm() {
       } else if (formData.password === "") {
         toast("Please add password");
       } else {
+        setLoading(true);
         const loginResponse = await userLogin({
           credential: formData.credential,
           password: formData.password,
@@ -135,13 +136,13 @@ function LoginForm() {
                             xmlns="http://www.w3.org/2000/svg"
                             className="cursor-pointer"
                           >
-                            {clicked ? (
-                              <FaEyeSlash
-                                onClick={() => setClicked(false)}
-                              />
-                            ) : (
-                              <FaRegEye onClick={() => setClicked(true)} />
-                            )}
+                              {clicked ? (
+                                <FaEyeSlash
+                                  onClick={() => setClicked(false)}
+                                />
+                              ) : (
+                                <FaRegEye onClick={() => setClicked(true)} />
+                              )}
                           </svg>
                         </div>
                       </div>
