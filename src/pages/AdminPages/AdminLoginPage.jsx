@@ -1,15 +1,22 @@
 import React, { useState } from "react";
-import meta from "../../assets/images/web.gif";
+import meta from "../../assets/images/tutor.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
+import { setUserDetailes } from "../../Redux/userSlice/userSlice";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AdminSignIn } from "../../api/adminApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function VendorLogin() {
+  const dispatch=useDispatch();
+  const navigate=useNavigate()
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    email: "",
+    credential: "",
     password: "",
   });
 
@@ -26,28 +33,28 @@ function VendorLogin() {
     setLoading(true);
 
     try {
-      if (formData.email === "") {
+      if (formData.credential === "") {
         toast("Please add email");
       } else if (formData.password === "") {
         toast("Please add password");
       } else {
         // Corrected the typo here
-        const loginResponse = await tutorLogin({
-          email: formData.email,
+        const loginResponse = await AdminSignIn({
+          credential: formData.credential,
           password: formData.password,
         });
         console.log(loginResponse);
         if (loginResponse.data) {
-          localStorage.setItem("token", loginResponse.data.token);
+          localStorage.setItem("admintoken", loginResponse.data.admintoken);
           dispatch(
-            setTutorDetailes({
-              id: loginResponse.data.tutorData._id,
-              name: loginResponse.data.tutorData.name,
-              phone: loginResponse.data.tutorData.mobile,
-              email: loginResponse.data.tutorData.email,
+            setUserDetailes({
+              id: loginResponse.data.loginData._id,
+              userName: loginResponse.data.loginData.userName,
+              phone: loginResponse.data.loginData.phone,
+              email: loginResponse.data.loginData.credential,
             })
           );
-          navigate("/vendor/");
+          navigate("/admin/dashboard");
         } else {
           toast(loginResponse.data.alert);
         }
@@ -73,7 +80,7 @@ function VendorLogin() {
           </div>
 
           <div className="sm:w-1/2 w-full h-full flex flex-col justify-center items-center">
-            <h3 className="text-lg font-serif">Signin</h3>
+            <h3 className="text-2xl font-serif">Admin</h3>
 
             <div>
               <form onSubmit={handleSubmit}>
@@ -89,11 +96,11 @@ function VendorLogin() {
                       <div className="relative flex flex-col justify-center items-center">
                         <input
                           type="text"
-                          name="email"
-                          id="email"
+                          name="credential"
+                          id="credential"
                           className="border p-2 text-[14px] w-[250px] sm:w-[280px] rounded-md outline-none shadow-md"
                           placeholder=" Enter an Email "
-                          value={formData.email}
+                          value={formData.credential}
                           onChange={handleChange}
                         />
                       </div>
@@ -149,40 +156,18 @@ function VendorLogin() {
                       onClick={() => {
                         setLoading(!loading);
                       }}
-                      className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
+                      className="bg-lightBlue-950 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"
                     >
                       Log in
                     </button>
                     {loading && (
-                      <PropagateLoader className="mt-3" color="#8b44ef" />
+                      <PropagateLoader className="mt-3" color="#082F49" />
                     )}
                   </div>
                 </div>
               </form>
-
-              <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2">
-                <div className="border w-10"></div>
-                <div>Or Login with</div>
-                <div className="border w-10"></div>
-              </div>
-              <div className="flex flex-col items-center justify-center w-full gap-4">
-                <div className="flex justify-center border items-center gap-5 rounded-md p-1 w-full shadow-md transition duration-500 hover:scale-105 cursor-pointer">
-                  {/* Google Sign-In Button */}
-                  <div className='style="height: 32px;'>
-                    {/* Add your Google Sign-In button here */}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-primary text-[13px]">
-              <div>
-                <a href="/vendor/signup">
-                  Don't have an account?
-                  <span className="text-violet-600 text-lg ">Sign up</span>
-                </a>
-              </div>
+              <ToastContainer/>
             </div>
           </div>
         </div>

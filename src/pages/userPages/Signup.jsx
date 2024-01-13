@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import meta from "../../assets/images/web.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { userSignUp } from "../../api/userApi";
+import { UserSendingOtp, userSignUp } from "../../api/userApi";
 import { useDispatch } from "react-redux";
 import { setUserDetailes } from "../../Redux/userSlice/userSlice";
-import {ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PropagateLoader from "react-spinners/PropagateLoader";
+
 function Signup() {
   const [clicked, setClicked] = useState(false);
+  let [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -24,39 +27,39 @@ function Signup() {
       [name]: value,
     });
   };
-   const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      if (formData.name.trim() === '' || formData.name === undefined) {
-        toast.error('Please enter your username');
-      } else if (formData.phone.trim() === '') {
-        toast.error('Please enter your phone number');
-      } else if (formData.credential.trim() === '') {
-        toast.error('Please enter your email');
-      } else if (formData.password.trim() === '') {
-        toast.error('Please enter your password');
-      }else{
-        const userData=await userSignUp({...formData})
-        if(userData.data.status){
-          dispatch(setUserDetailes({
-            id:userData.data.saveUserData._id,
-            name:userData.data.saveUserData.name,
-            email:userData.data.saveUserData.credential,
-            phone:userData.data.saveUserData.phone,
-            is_Admin:userData.data.saveUserData.is_Admin,
-          }))
-          navigate('/login')
-        }else{
-          toast(userData.data.alert)
-        }
-      }
+    setLoading(true);
 
-    }catch(err){
-console.log(err);
+    try {
+      if (formData.name.trim() === "" || formData.name === undefined) {
+        toast.error("Please enter your username");
+      } else if (formData.phone.trim() === "") {
+        toast.error("Please enter your phone number");
+      } else if (formData.credential.trim() === "") {
+        toast.error("Please enter your email");
+      } else if (formData.password.trim() === "") {
+        toast.error("Please enter your password");
+      } else {
+        const userData = await userSignUp(formData).then((res) => {
+          console.log(res);
+          if (res.status === 201) {
+            const dataOtp = { email: formData.credential };
+            console.log(dataOtp, "dataOtp");
+
+            const tutorOtp = UserSendingOtp(dataOtp).then((res) => {
+              console.log(res, "tutorOtp");
+              if (res.status === 200) {
+                navigate("/otp", { state: { type: "user" } });
+              }
+            });
+          }
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
-    
-   
   };
   const [activeTab, setActiveTab] = useState("student");
 
@@ -68,7 +71,6 @@ console.log(err);
       navigate("/vendor/signup");
     }
   };
-
 
   return (
     <>
@@ -204,17 +206,23 @@ console.log(err);
 
                   <div className="flex flex-col items-center">
                     <button
+                      onClick={() => {
+                        setLoading(!loading);
+                      }}
                       className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"
                     >
                       SignUp
                     </button>
+                    {loading && (
+                      <PropagateLoader className="mt-3" color="#8b44ef" />
+                    )}
                   </div>
                 </div>
               </form>
               <ToastContainer />
 
-              <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2">
+              <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2 mt-3">
                 <div className="border w-10"></div>
                 <div>Or Login with</div>
                 <div className="border w-10"></div>
@@ -249,6 +257,7 @@ console.log(err);
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

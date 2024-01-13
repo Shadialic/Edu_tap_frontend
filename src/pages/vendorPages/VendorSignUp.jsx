@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import meta from "../../assets/images/teacher.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { TutorSignUp } from "../../api/VendorApi";
+import { TutorSendingOtp, TutorSignUp } from "../../api/VendorApi";
 import { useDispatch } from "react-redux";
-import {setTutorDetailes} from "../../Redux/TutorSlice/tutorSlice";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
+import {ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import PropagateLoader from "react-spinners/PropagateLoader";
+// import Otp from "../../components/otp/Otp";
 
 function VendorSignUp() {
   const [clicked, setClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [blurBackground, setBlurBackground] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -28,16 +32,20 @@ function VendorSignUp() {
       [name]: value,
     });
   };
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFormData({
-      ...formData,
-      image: file,
-    });
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setFormData({
+  //     ...formData,
+  //     image: file,
+  //   });
+  // };
+  const handleBlurBackground = () => {
+    setBlurBackground(!blurBackground);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    handleBlurBackground(); 
     if (formData.tutorName.trim() == "" || formData.tutorName === undefined) {
       toast.error("Please enter your name");
     } else if (formData.phone.trim() === "") {
@@ -46,24 +54,22 @@ function VendorSignUp() {
       toast.error("Please enter your email");
     } else if (formData.password.trim() === "") {
       toast.error("Please enter your password");
-    }  else {
-      const tutorData = await TutorSignUp({ ...formData });
-      console.log(tutorData,'tutorData');
-      if (tutorData.data.status) {
-        dispatch(
-          setTutorDetailes({
-            id: tutorData.data.saveTutorData._id,
-            tutorName: tutorData.data.saveTutorData.tutorName,
-            email: tutorData.data.saveTutorData.email,
-            phone: tutorData.data.saveTutorData.phone,
-            
-            is_Admin: tutorData.data.saveTutorData.is_Admin,
+    } else {
+      const tutorData = await TutorSignUp(formData).then((res) => {
+        console.log(res,'dddddddeeeea11111111111111111aaa');
+        if (res.status===201) {
+         
+          const dataOtp={email:formData.email}
+          const Tutorotp=TutorSendingOtp(dataOtp).then((response)=>{
+                 if(response.status===200){
+                  navigate("/vendor/otp",{state:{type:"vendor"}});
+                 } else {
+                  toast(tutorData.data.alert);
+                }
           })
-        );
-        navigate("/vendor/login");
-      } else {
-        toast(tutorData.data.alert);
-      }
+        }
+      });
+     
     }
     console.log("Form submitted with data:", formData);
   };
@@ -74,14 +80,14 @@ function VendorSignUp() {
     if (tab === "student") {
       navigate("/signup");
     } else if (tab === "vendor") {
-      navigate('/vendor/signup');
+      navigate("/vendor/signup");
     }
   };
 
   return (
     <>
-      <div className="bg-authentication-background bg-cover bg-gray-100 flex justify-center items-center w-screen h-screen py-7 px-5">
-        <div className="bg-white w-full sm:max-w-[80%] min-h-[100%] overflow-auto rounded-md flex justify-center items-center shadow-xl p-3 gap-5 flex-row">
+      <div className={`bg-authentication-background bg-cover bg-gray-100 flex justify-center items-center w-screen h-screen py-7 px-5 sweet-loading ${blurBackground ? "backdrop-blur-md" : ""}`}>
+        <div className={`bg-white w-full sm:max-w-[80%] min-h-[100%] overflow-auto rounded-md flex justify-center items-center shadow-xl p-3 gap-5 flex-row ${blurBackground ? "backdrop-blur-lg" : ""}`}>
           <div className="justify-center items-center text-center hidden lg:flex flex-col lg:w-1/2 relative">
             <div className="font-semibold text-lg w-full">
               <span className="font-bold text-4xl">Edu-tap</span>
@@ -108,6 +114,7 @@ function VendorSignUp() {
                 Tutor
               </div>
             </div>
+
             <div>
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col justify-center gap-3 px-5 py-2">
@@ -237,18 +244,23 @@ function VendorSignUp() {
                   </div>
 
                   <div className="flex flex-col items-center">
-                    <button
+                    <button  onClick={() => {
+                setLoading(!loading);
+                handleBlurBackground();
+              }}
                       className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"
                     >
                       SignUp
                     </button>
+
+                  {loading && <PropagateLoader  className="mt-3" color="#8b44ef" />}
                   </div>
                 </div>
               </form>
               <ToastContainer />
 
-              <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2">
+              <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2 mt-3">
                 <div className="border w-10"></div>
                 <div>Or Login with</div>
                 <div className="border w-10"></div>

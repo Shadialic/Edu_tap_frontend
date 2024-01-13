@@ -1,15 +1,24 @@
 import React, { useState } from "react";
-import meta from "../../assets/images/web.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
+import { userLogin } from "../../api/userApi";
+import { setUserDetailes } from "../../Redux/userSlice/userSlice";
+import { useDispatch } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import ForgetPass from "../../components/forgetPass/ForgetPass";
 
-function VendorLogin() {
+function LoginForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isOpn, setOpn] = useState(false);
 
   const [formData, setFormData] = useState({
-    email: "",
+    credential: "",
     password: "",
   });
 
@@ -21,33 +30,38 @@ function VendorLogin() {
     });
   };
 
+  const handlePassword = () => {
+    setOpn(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      if (formData.email === "") {
+      if (formData.credential === "") {
         toast("Please add email");
       } else if (formData.password === "") {
         toast("Please add password");
       } else {
-        // Corrected the typo here
-        const loginResponse = await tutorLogin({
-          email: formData.email,
+        const loginResponse = await userLogin({
+          credential: formData.credential,
           password: formData.password,
         });
-        console.log(loginResponse);
-        if (loginResponse.data) {
+
+        if (loginResponse.data && loginResponse.data.userData) {
           localStorage.setItem("token", loginResponse.data.token);
           dispatch(
-            setTutorDetailes({
-              id: loginResponse.data.tutorData._id,
-              name: loginResponse.data.tutorData.name,
-              phone: loginResponse.data.tutorData.mobile,
-              email: loginResponse.data.tutorData.email,
+            setUserDetailes({
+              id: loginResponse.data.userData._id,
+              name: loginResponse.data.userData.userName,
+              phone: loginResponse.data.userData.mobile,
+              is_Active: loginResponse.data.userData.is_Active,
+              email: loginResponse.data.userData.credential,
+              is_Admin: loginResponse.data.userData.is_Admin,
             })
           );
-          navigate("/vendor/");
+          navigate("/");
         } else {
           toast(loginResponse.data.alert);
         }
@@ -55,33 +69,27 @@ function VendorLogin() {
     } catch (err) {
       console.log(err);
     }
+
+    setLoading(false);
     console.log("Form submitted with data:", formData);
   };
 
   return (
-    <>
-      <div className="bg-authentication-background bg-cover bg-gray-100 flex justify-center items-center w-screen h-screen py-7 px-5">
-        <div className="bg-white w-full sm:max-w-[80%] min-h-[100%] overflow-auto rounded-md flex justify-center items-center shadow-xl p-3 gap-5 flex-row">
-          <div className="justify-center items-center text-center hidden lg:flex flex-col lg:w-1/2 relative">
-            <div className="font-semibold text-lg w-full">
-              <span className="font-prompt-semibold text-4xl mt-20">
-                Edu-tap
-              </span>
-              {/* <h4 className='text-3xl ml-16'>E-Learning Platform</h4> */}
-              <img className="rounded-md" src={meta} alt="" />
-            </div>
-          </div>
-
+    <div className=" flex justify-center items-center ">
+      <div className=" sm:max-w-[100%] min-h-[100%]  flex justify-center items-center p-3 gap-5 flex-row">
+        {isOpn ? (
+          <ForgetPass onClose={() => setOpn(false)} />
+        ) : (
           <div className="sm:w-1/2 w-full h-full flex flex-col justify-center items-center">
             <h3 className="text-lg font-serif">Signin</h3>
 
-            <div>
+            <div className="ml-10 ">
               <form onSubmit={handleSubmit}>
-                <div className="flex flex-col justify-center gap-3 px-5 py-2">
+                <div className="flex flex-col justify-center gap-3 px-5 py-8">
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
                       <label
-                        htmlFor="email"
+                        htmlFor="credential"
                         className="text-[14px] text-shadow-black"
                       >
                         Email
@@ -89,11 +97,11 @@ function VendorLogin() {
                       <div className="relative flex flex-col justify-center items-center">
                         <input
                           type="text"
-                          name="email"
-                          id="email"
+                          name="credential"
+                          id="credential"
                           className="border p-2 text-[14px] w-[250px] sm:w-[280px] rounded-md outline-none shadow-md"
                           placeholder=" Enter an Email "
-                          value={formData.email}
+                          value={formData.credential}
                           onChange={handleChange}
                         />
                       </div>
@@ -128,7 +136,9 @@ function VendorLogin() {
                             className="cursor-pointer"
                           >
                             {clicked ? (
-                              <FaEyeSlash onClick={() => setClicked(false)} />
+                              <FaEyeSlash
+                                onClick={() => setClicked(false)}
+                              />
                             ) : (
                               <FaRegEye onClick={() => setClicked(true)} />
                             )}
@@ -139,16 +149,16 @@ function VendorLogin() {
                   </div>
 
                   <div className="flex w-full h-fit justify-end items-center text-primary text-[13px] ">
-                    <span className="w-fit h-fit cursor-pointer">
+                    <span
+                      className="w-fit h-fit cursor-pointer"
+                      onClick={handlePassword}
+                    >
                       Forgot password?
                     </span>
                   </div>
 
                   <div className="flex flex-col items-center">
                     <button
-                      onClick={() => {
-                        setLoading(!loading);
-                      }}
                       className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"
                     >
@@ -160,6 +170,7 @@ function VendorLogin() {
                   </div>
                 </div>
               </form>
+              <ToastContainer />
 
               <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2">
                 <div className="border w-10"></div>
@@ -169,26 +180,29 @@ function VendorLogin() {
               <div className="flex flex-col items-center justify-center w-full gap-4">
                 <div className="flex justify-center border items-center gap-5 rounded-md p-1 w-full shadow-md transition duration-500 hover:scale-105 cursor-pointer">
                   {/* Google Sign-In Button */}
-                  <div className='style="height: 32px;'>
-                    {/* Add your Google Sign-In button here */}
-                  </div>
+                  <div
+                    style={{
+                      height: "32px",
+                      /* Add your Google Sign-In button here */
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
 
             <div className="text-primary text-[13px]">
               <div>
-                <a href="/vendor/signup">
+                <a href="/signup">
                   Don't have an account?
                   <span className="text-violet-600 text-lg ">Sign up</span>
                 </a>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 
-export default VendorLogin;
+export default LoginForm;

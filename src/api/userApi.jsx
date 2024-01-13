@@ -12,6 +12,25 @@ export async function userSignUp(signUpData){
         console.log(error);
     }
 }
+export async function UserSendingOtp(otpData){
+    try{
+        const data=await UserApi.post('/sendotp',otpData);
+        return data
+    }catch(err){
+        console.log(err);
+    }
+}
+
+export async function UserVerifyOtp(otpData){
+    try{
+        console.log('ssssssqqqqqq');
+        const data=await UserApi.post('/verifyotp',otpData);
+        console.log(data,'///////////////////////////');
+        return data
+    }catch(err){
+        console.log(err);
+    }
+}
 export async function userLogin(loginData){
     try {
         const data2 = await UserApi.post('/login',loginData)
@@ -21,3 +40,38 @@ export async function userLogin(loginData){
         console.log(error)
     }
 }
+
+export async function forgotPass(forgotData){
+    try {
+        console.log(forgotData,'forgotpass');
+        const data = await UserApi.post('/forgotPass',forgotData)
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function passverifyOTP(newData){
+    try{
+        console.log('0000000002222222222222222222');
+        const data=await UserApi.post('/newPass',newData);
+        console.log(data,'///////111111111111111111111111////////////////////');
+        return data
+    }catch(err){
+        console.log(err);
+    }
+}
+
+export async function updatePass(updateData){
+    try {
+        const data = await UserApi.put('/updateaPass',updateData)
+        console.log(data,'updatePass');
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+

@@ -6,6 +6,7 @@ const initialState = {
     phone:'',
     email:'',
     image:"",
+    is_Active:'',
     is_admin:''
 }
 
@@ -18,6 +19,7 @@ const userSlice=createSlice({
             state.userName=action.payload.userName;
             state.email=action.payload.email;
             state.phone=action.payload.phone;
+            state.is_Active=action.payload.is_Active;
         },
         logoutDetails:(state,action)=>{
             state.id='';
