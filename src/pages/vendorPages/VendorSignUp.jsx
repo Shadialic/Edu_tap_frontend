@@ -11,7 +11,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 function VendorSignUp() {
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [blurBackground,setBlurBackground]=useState(false)
+  const [blurBackground, setBlurBackground] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     tutorName: "",
@@ -72,7 +72,6 @@ function VendorSignUp() {
         if (res.status === 201) {
           const dataOtp = { email: formData.email };
           const Tutorotp = TutorSendingOtp(dataOtp).then((response) => {
-      
             if (response.status === 200) {
               navigate("/vendor/otp", { state: { type: "vendor" } });
             } else {
@@ -225,7 +224,7 @@ function VendorSignUp() {
                               xmlns="http://www.w3.org/2000/svg"
                               className="cursor-pointer"
                             >
-                              {clicked ? (
+                              {!clicked ? (
                                 <FaEyeSlash onClick={() => setClicked(false)} />
                               ) : (
                                 <FaRegEye onClick={() => setClicked(true)} />
@@ -256,13 +255,7 @@ function VendorSignUp() {
                     </div> */}
                   </div>
 
-                  <div className="flex w-full h-fit justify-end items-center text-primary text-[13px] ">
-                    <span className="w-fit h-fit cursor-pointer">
-                      Forgot password?
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center mt-3">
                     <button
                       className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white"
                       type="submit"

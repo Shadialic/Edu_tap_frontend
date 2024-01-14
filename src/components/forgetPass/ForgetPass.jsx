@@ -4,9 +4,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { forgotPass } from "../../api/userApi";
 import { useNavigate } from "react-router-dom";
+import PropagateLoader from "react-spinners/PropagateLoader";
+
 function ForgetPass() {
   const navigate = useNavigate();
   const [isOpn, setOpn] = useState(false);
+  let [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState(""); // Initialize email state with an empty string
   const backhandle = (e) => {
@@ -22,11 +25,13 @@ function ForgetPass() {
         toast("Please add email");
       } else {
         await forgotPass(data).then((res) => {
-          console.log(data,'33333333333');
-          navigate("/otp", { state: {
-            type:"forgot",
-            email:email
-          }, });
+          console.log(data, "33333333333");
+          navigate("/otp", {
+            state: {
+              type: "forgot",
+              email: email,
+            },
+          });
         });
       }
     } catch (err) {
@@ -63,6 +68,7 @@ function ForgetPass() {
           >
             Reset Password
           </button>
+          {loading && <PropagateLoader className="mt-3" color="#8b44ef" />}
           <div className="flex w-full h-fit justify-start items-center text-[13px] text-primary">
             <span className="cursor-pointer w-fit h-fit flex">
               <svg

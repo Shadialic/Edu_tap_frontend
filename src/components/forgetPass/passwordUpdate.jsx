@@ -17,6 +17,15 @@ const PasswordUpdate = ({ email }) => {
       console.log(data, "00000000");
       if (password === "") {
         toast("Please add password");
+      }else if (!/[a-z]/.test(password)) {
+        toast.error("Password must contain at least one lowercase letter");
+        return;
+      } else if (!/[A-Z]/.test(password)) {
+        toast.error("Password must contain at least one uppercase letter");
+        return;
+      } else if (!/\d/.test(password)) {
+        toast.error("Password must contain at least one number");
+        return;
       } else {
         console.log(data, "0000211111110");
         await updatePass(data).then((res) => {

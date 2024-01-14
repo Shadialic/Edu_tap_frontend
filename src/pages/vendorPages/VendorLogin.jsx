@@ -3,8 +3,13 @@ import meta from "../../assets/images/web.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import { tutorLogin } from "../../api/VendorApi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function VendorLogin() {
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
 

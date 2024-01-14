@@ -31,9 +31,9 @@ export async function TutorVerifyOtp(otpData){
     }
 }
 
-export async function userLogin(loginData){
+export async function tutorLogin(loginData){
     try {
-        const data2 = await UserApi.post('/vendor/login',loginData)
+        const data2 = await TutorApi.post('/vendor/login',loginData)
         console.log(data2);
         return data2
     } catch (error) {
