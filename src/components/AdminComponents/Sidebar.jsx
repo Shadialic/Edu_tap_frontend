@@ -11,16 +11,16 @@ import {
 } from "@material-tailwind/react";
 import logo from "../../assets/images/logo.png";
 
-export function Sidebar() {
-  const [activeButton, setActiveButton] = useState(null);
+export const  Sidebar=({state})=> {
+  // const [activeButton, setActiveButton] = useState(null);
 
-  const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName);
-  };
+  // const handleButtonClick = (buttonName) => {
+  //   setActiveButton(buttonName);
+  // };
 
-  const isButtonActive = (buttonName) => {
-    return buttonName === activeButton;
-  };
+  // const isButtonActive = (buttonName) => {
+  //   return buttonName === activeButton;
+  // };
 
   
   return (
@@ -38,10 +38,9 @@ export function Sidebar() {
           <li>
             <a className="">
               <Link
-              onClick={() => handleButtonClick("dashboard")}
-              
+            
                 to="/admin/dashboard"
-                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${isButtonActive('dashboard')  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='Dashboard'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -63,9 +62,9 @@ export function Sidebar() {
           <li>
             <a className="" >
               <Link
-                    onClick={() => handleButtonClick("users")}
+                   
                 to="/admin/users"
-                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${isButtonActive('users')?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='users'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`} w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -91,7 +90,7 @@ export function Sidebar() {
             <a className="">
               <Link
                 to="/admin/tutors"
-                className="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 w-full flex items-center gap-4 px-4 capitalize"
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='tutor'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -109,6 +108,32 @@ export function Sidebar() {
                 </svg>
                 <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
                   Tutors
+                </p>
+              </Link>
+            </a>
+          </li>
+          <li>
+            <a className="">
+              <Link
+                to="/admin/tutors"
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='tutor'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
+                type="button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="w-5 h-5 text-inherit"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
+                  Tutors Request
                 </p>
               </Link>
             </a>
@@ -139,76 +164,11 @@ export function Sidebar() {
             </a>
           </li>
         </ul>
-        <ul className="mb-4 flex flex-col gap-1">
-          <li className="mx-3.5 mt-4 mb-2">
-            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-black uppercase opacity-75">
-              auth pages
-            </p>
-          </li>
-          <li>
-            <a className="" href="#/auth/sign-in">
-              <Link
-                className="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 w-full flex items-center gap-4 px-4 capitalize"
-                type="button"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="w-5 h-5 text-inherit"
-                >
-                  <path d="M5.507 4.048A3 3 0 017.785 3h8.43a3 3 0 012.278 1.048l1.722 2.008A4.533 4.533 0 0019.5 6h-15c-.243 0-.482.02-.715.056l1.722-2.008z"></path>
-                  <path
-                    fill-rule="evenodd"
-                    d="M1.5 10.5a3 3 0 013-3h15a3 3 0 110 6h-15a3 3 0 01-3-3zm15 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm2.25.75a.75.75 0 100-1.5.75.75 0 000 1.5zM4.5 15a3 3 0 100 6h15a3 3 0 100-6h-15zm11.25 3.75a.75.75 0 100-1.5.75.75 0 000 1.5zM19.5 18a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
-                  sign in
-                </p>
-              </Link>
-            </a>
-          </li>
-          <li>
-            <a className="" href="#/auth/sign-up">
-              <Link
-                className="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 w-full flex items-center gap-4 px-4 capitalize"
-                type="button"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="w-5 h-5 text-inherit"
-                >
-                  <path d="M5.566 4.657A4.505 4.505 0 016.75 4.5h10.5c.41 0 .806.055 1.183.157A3 3 0 0015.75 3h-7.5a3 3 0 00-2.684 1.657zM2.25 12a3 3 0 013-3h13.5a3 3 0 013 3v6a3 3 0 01-3 3H5.25a3 3 0 01-3-3v-6zM5.25 7.5c-.41 0-.806.055-1.184.157A3 3 0 016.75 6h10.5a3 3 0 012.683 1.657A4.505 4.505 0 0018.75 7.5H5.25z"></path>
-                </svg>
-                <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
-                  sign up
-                </p>
-              </Link>
-            </a>
-          </li>
-        </ul>
+       
       </div>
     </aside>
   );
 }
 
-// Sidebar.defaultProps = {
-//   brandImg: "/img/logo-ct.png",
-//   brandName: "Material Tailwind React",
-// };
-
-// Sidebar.propTypes = {
-//   brandImg: PropTypes.string,
-//   brandName: PropTypes.string,
-//   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
-// };
-
-// Sidebar.displayName = "/src/widgets/layout/sidnave.jsx";
 
 export default Sidebar;

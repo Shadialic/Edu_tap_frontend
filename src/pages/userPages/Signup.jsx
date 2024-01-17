@@ -1,17 +1,71 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import meta from "../../assets/images/web.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { UserSendingOtp, userSignUp } from "../../api/userApi";
+import {
+  UserSendingOtp,
+  userRegisterGoogle,
+  userSignUp,
+} from "../../api/userApi";
 import { ToastContainer, toast } from "react-toastify";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import { useDispatch } from "react-redux";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import { FcGoogle } from "react-icons/fc";
+import { setUserDetailes } from "../../Redux/userSlice/userSlice";
 
 function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [clicked, setClicked] = useState(true);
   let [loading, setLoading] = useState(false);
+  const [user, setUser] = useState([]);
 
-  const navigate = useNavigate();
+  const GoogleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: () => toast.error("Goole login failed"),
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (user) {
+          const response = await axios.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+            {
+              headers: {
+                Authorization: `Bearer ${user.access_token}`,
+                Accept: "application/json",
+              },
+            }
+          );
+          const result = await userRegisterGoogle(response.data);
+          toast(result.data.alert);
+          if (result.data.created) {
+            toast(result.data.alert);
+            console.log(result);
+            dispatch(
+              setUserDetailes({
+                userName: result.data.userName,
+                email: result.data.email,
+                role: "user",
+              })
+            );
+            localStorage.setItem("token", result.data.jwtToken);
+            navigate("/");
+          } else {
+            toast.error(result.data.message);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [user, dispatch, navigate]);
   const [formData, setFormData] = useState({
     name: "",
     credential: "",
@@ -27,7 +81,7 @@ function Signup() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+
     try {
       if (
         formData.name.trim() === "" ||
@@ -203,13 +257,11 @@ function Signup() {
                               xmlns="http://www.w3.org/2000/svg"
                               className="cursor-pointer"
                             >
-                             {clicked ? (
-                              <FaEyeSlash
-                                onClick={() => setClicked(false)}
-                              />
-                            ) : (
-                              <FaRegEye onClick={() => setClicked(true)} />
-                            )}
+                              {clicked ? (
+                                <FaEyeSlash onClick={() => setClicked(false)} />
+                              ) : (
+                                <FaRegEye onClick={() => setClicked(true)} />
+                              )}
                             </svg>
                           </div>
                         </div>
@@ -237,10 +289,15 @@ function Signup() {
                 <div className="border w-10"></div>
               </div>
               <div className="flex flex-col items-center justify-center w-full gap-4">
-                <div className="flex justify-center border items-center gap-5 rounded-md p-1 w-full shadow-md transition duration-500 hover:scale-105 cursor-pointer">
+                <div
+                  onClick={() => GoogleLogin()}
+                  className="flex justify-center border items-center gap-5 rounded-md p-1 w-10/12 shadow-md transition duration-500 hover:scale-105 cursor-pointer"
+                >
                   {/* Google Sign-In Button */}
-                  <div className='style="height: 32px;'>
+                  <FcGoogle />
+                  <div className='style="height: 32px; pr-3'>
                     {/* Add your Google Sign-In button here */}
+                    sign in with Google
                   </div>
                 </div>
               </div>

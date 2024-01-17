@@ -24,6 +24,7 @@ function ForgetPass() {
       if (email === "") {
         toast("Please add email");
       } else {
+        setLoading(true);
         await forgotPass(data).then((res) => {
           console.log(data, "33333333333");
           navigate("/otp", {
@@ -62,14 +63,16 @@ function ForgetPass() {
               />
             </div>
           </div>
+          <div className="flex flex-col items-center">
           <button
             type="submit"
             className="bg-violet-600 h-8 rounded-md w-full flex justify-center items-center gap-2 text-white mt-3"
           >
             Reset Password
           </button>
-          {loading && <PropagateLoader className="mt-3" color="#8b44ef" />}
-          <div className="flex w-full h-fit justify-start items-center text-[13px] text-primary">
+          {loading && <PropagateLoader className="mt-2" color="#8b44ef" />}
+         </div>
+          <div className="flex w-full h-fit justify-start items-center text-[13px] text-primary mt-4">
             <span className="cursor-pointer w-fit h-fit flex">
               <svg
                 stroke="currentColor"

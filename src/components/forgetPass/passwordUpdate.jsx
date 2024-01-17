@@ -31,6 +31,7 @@ const PasswordUpdate = ({ email }) => {
         await updatePass(data).then((res) => {
           console.log(res, "res");
           if (res.status === 200) {
+            toast('Your Password Updated')
             navigate("/login");
           }
         });

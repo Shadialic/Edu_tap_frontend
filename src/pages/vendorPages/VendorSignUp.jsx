@@ -9,7 +9,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 // import Otp from "../../components/otp/Otp";
 
 function VendorSignUp() {
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState(true);
   const [loading, setLoading] = useState(false);
   const [blurBackground, setBlurBackground] = useState(false);
   const navigate = useNavigate();
@@ -66,9 +66,10 @@ function VendorSignUp() {
     } else {
       handleBlurBackground();
       setLoading(true);
+      toast.success("Form submitted successfully!");
+
       const tutorData = await TutorSignUp(formData).then((res) => {
         toast(res.data.alert);
-        console.log(res, "dddddddeeeea11111111111111111aaa");
         if (res.status === 201) {
           const dataOtp = { email: formData.email };
           const Tutorotp = TutorSendingOtp(dataOtp).then((response) => {
@@ -224,8 +225,10 @@ function VendorSignUp() {
                               xmlns="http://www.w3.org/2000/svg"
                               className="cursor-pointer"
                             >
-                              {!clicked ? (
-                                <FaEyeSlash onClick={() => setClicked(false)} />
+                              {clicked ? (
+                                <FaEyeSlash
+                                  onClick={() => setClicked(false)}
+                                />
                               ) : (
                                 <FaRegEye onClick={() => setClicked(true)} />
                               )}

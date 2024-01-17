@@ -8,8 +8,8 @@ function Dashboard() {
   return (
     <>
     <div className="bg-gray-100 w-screen h-screen">
-      <Sidebar/>
-      <Navbar/>
+      <Sidebar state={'Dashboard'}/>
+      <Navbar state={'Dashboard'}/>
     
       
       

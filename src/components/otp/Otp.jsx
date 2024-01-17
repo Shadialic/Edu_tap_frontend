@@ -3,8 +3,8 @@ import meta from "../../assets/images/web.gif";
 import { TutorSendingOtp, TutorVerifyOtp } from "../../api/VendorApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { UserVerifyOtp, forgotPass, passverifyOTP } from "../../api/userApi";
-
+import { UserSendingOtp, UserVerifyOtp, forgotPass, passverifyOTP } from "../../api/userApi";
+import { useSelector } from 'react-redux';
 import PasswordUpdate from "../forgetPass/passwordUpdate";
 function Otp() {
   const [otp, setOtp] = useState("");
@@ -50,6 +50,9 @@ function Otp() {
   const resendOTP = () => {
     setMinutes(1);
     setSeconds(30);
+    const yourData = useSelector(state => state.user.email);
+    
+    const tutorOtp = UserSendingOtp(yourData)
   };
   const backhandle = async (req, res) => {
     navigate("/vendor/signup");
@@ -66,39 +69,44 @@ function Otp() {
     const data = { otp: otp };
 
     if (otp.length === 6) {
-      
       if (current.type == "forgot") {
         await passverifyOTP(data).then((res) => {
-         
           console.log(res, "??????????????");
-          if (res.status == 200) {
+          if (res.data.status == 200) {
             console.log(res, "????======");
 
             setPage("password");
           }
         });
       } else if (current.type == "user") {
-        await UserVerifyOtp(data).then((res) => {
+        try {
+          const res = await UserVerifyOtp(data);
           console.log(res, "sdjsdfhjsdhfusdhfuhsd");
-          if (res.status === 200) {
+
+          if (res.data.status) {
+            toast(res.data.alert);
             navigate("/login");
-          } else if (res.status === 400) {
-            toast.error("Wrong otp ");
+          } else {
+            toast.error(res.data.alert);
           }
-        });
+        } catch (error) {
+          console.error("An error occurred:", error);
+        }
       } else if (current.type == "vendor") {
         await TutorVerifyOtp(data).then((res) => {
-          toast(res.data.alert)
+          toast(res.data.alert);
           console.log(res.data.tutor, "55555555555555555");
-          if (res.status === 200) {
-          toast(res.data.alert)
+          if (res.data.status) {
+            console.log(res.data.tutor, "52222222555555555");
+
+            toast(res.data.alert);
 
             navigate("/vendor/login");
-          } else if (res.status === 400) {
-            toast.error("Wrong otp ");
           }
         });
       }
+    } else {
+      toast("please Enter 6 Digits");
     }
     // if (current == "forgot") {
     //   console.log('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
@@ -217,7 +225,7 @@ function Otp() {
                         className=" bg-violet-600 rounded-md text-white  btn-class w-full flex justify-center items-center gap-2"
                         type="submit"
                       >
-                        Conform
+                        Confirm
                       </button>
                     </div>
                     <div className="flex w-full h-fit justify-start items-center text-[13px] text-primary">

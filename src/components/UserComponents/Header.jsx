@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logoO.png";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import logoutDetails from "../../Redux/userSlice/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import logoutDetails, { setUserDetailes } from "../../Redux/userSlice/userSlice";
 
 function Header() {
-  const dispaatch = useDispatch();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  console.log(user,'poooddddddddd');
+  const userName = user.userName;
+  console.log(userName,'poooddddddddddddddddddd');
+
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -20,7 +25,7 @@ function Header() {
     {
       localStorage.removeItem("token");
     }
-    dispaatch(
+    dispatch(
       logoutDetails({
         id: "",
         name: "",
@@ -30,6 +35,7 @@ function Header() {
     );
     navigate("/");
   };
+
   const nav_title = [
     {
       path: "/",
@@ -75,7 +81,7 @@ function Header() {
               type="button"
               className="inline-flex justify-center mt-2 w-full sm:w-auto rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:bg-gray-200"
             >
-              User
+              {userName}
             </button>
           ) : (
             <button
