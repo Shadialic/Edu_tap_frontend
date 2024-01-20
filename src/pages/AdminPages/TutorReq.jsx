@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/AdminComponents/Sidebar";
 import Navbar from "../../components/AdminComponents/Navbar";
-import { BlockUnblockTutor, LoadTutorList } from "../../api/adminApi";
+import { LoadTutorList, apporvTutor } from "../../api/adminApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { logoutDetails } from "../../Redux/TutorSlice/tutorSlice";
 import { useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +11,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+
 function Tutors() {
   const dispatch = useDispatch();
   const [tutor, setTutor] = useState([]);
@@ -23,7 +23,7 @@ function Tutors() {
     LoadTutorList()
       .then((res) => {
         const tutorList = res.data.tutordata;
-        const activeTutors = tutorList.filter((item) => item.is_Actived === 'true');
+        const activeTutors = tutorList.filter((item) => item.is_Actived === 'false');
         setTutor(activeTutors);
       })
       .catch((err) => {
@@ -31,38 +31,21 @@ function Tutors() {
       });
   }, []);
 
-  const handleblockTutor = async (userId) => {
+  const handleTutor = async (userId) => {
     try {
-      // Remove the token from localStorage
-      localStorage.removeItem("token");
-      // Dispatch logoutDetails action to update Redux state
-      dispatch(
-        logoutDetails({
-          id: "",
-          tutorName: "",
-          email: "",
-          phone: "",
-        })
-      );
-
-      // Call BlockUnblockuser API to update user status
-      await BlockUnblockTutor({ _id: userId }).then((res) => {
-        if (res.status === 200) {
-          toast(res.data.alert);
-          // Toggle the 'block' property of the user with the specified 'userId'
-          setTutor((prevTutors) =>
-            prevTutors.map((tutor) =>
-              tutor._id === userId ? { ...tutor, block: !tutor.block } : tutor
-            )
-          );
-        }
-      });
+      console.log(userId,'233332323');
+    await apporvTutor({ _id: userId }).then((res)=>{
+      toast(res.data.alert)
+      console.log(res,'pdpdpdpdp');
+    })
+  
     } catch (error) {
       console.error(error);
     }
   };
+
   //===================== SEACHED DATA FETCHING  ============//
-console.log(tutor,'ddddssaaaa');
+
   const tutorDatas = tutor.filter((tutor) => {
     const searchLowerCase = searchInput.toLowerCase();
     const EmailMatch = tutor.email.toLowerCase().includes(searchLowerCase);
@@ -74,12 +57,13 @@ console.log(tutor,'ddddssaaaa');
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedUserDatas = tutorDatas.slice(startIndex, endIndex);
+  console.log(tutorDatas, "[q[q[q[q[");
 
   return (
     <div>
-      <Sidebar state={"tutor"} />
+      <Sidebar state={"tutorReq"} />
       <Navbar
-        state={"tutor"}
+        state={"TutorsReq"}
         searchInput={searchInput}
         setSearchInput={setSearchInput}
       />
@@ -87,10 +71,13 @@ console.log(tutor,'ddddssaaaa');
         <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
           <div className="relative bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 shadow-lg -mt-6 mb-8 p-6">
             <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white">
-              Tutors List
+              Tutor Request List
             </h6>
           </div>
           <div className="p-6 overflow-x-scroll px-0 pt-0 pb-2">
+          {tutorDatas&&tutorDatas.length>0?(
+
+          
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
@@ -166,25 +153,16 @@ console.log(tutor,'ddddssaaaa');
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
-                        {!values.block ? (
+                       
                           <button
                             className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
                             data-projection-id="1"
                             style={{ opacity: 1 }}
-                            onClick={() => handleblockTutor(values._id)}
+                            onClick={() => handleTutor(values._id)}
                           >
-                            <span>Block</span>
+                            <span>approv</span>
                           </button>
-                        ) : (
-                          <button
-                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
-                            data-projection-id="1"
-                            style={{ opacity: 1 }}
-                            onClick={() => handleblockTutor(values._id)}
-                          >
-                            <span>Unblock</span>
-                          </button>
-                        )}
+                      
                       </div>
                     </td>
                     {/* ... other table cells ... */}
@@ -192,6 +170,11 @@ console.log(tutor,'ddddssaaaa');
                 ))}
               </tbody>
             </table>
+            ):(
+              <div className="text-center text-gray-600">
+              No tutors to display.
+            </div>
+            )}
             <div className="flex justify-center mt-4">
               <ReactPaginate
                 previousLabel={

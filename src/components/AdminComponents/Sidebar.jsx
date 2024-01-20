@@ -11,7 +11,7 @@ import {
 } from "@material-tailwind/react";
 import logo from "../../assets/images/logo.png";
 
-export const  Sidebar=({state})=> {
+export const Sidebar = ({ state }) => {
   // const [activeButton, setActiveButton] = useState(null);
 
   // const handleButtonClick = (buttonName) => {
@@ -22,7 +22,6 @@ export const  Sidebar=({state})=> {
   //   return buttonName === activeButton;
   // };
 
-  
   return (
     <aside className="bg-white shadow-sm -translate-x-80 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100">
       <div className="relative flex">
@@ -38,9 +37,12 @@ export const  Sidebar=({state})=> {
           <li>
             <a className="">
               <Link
-            
                 to="/admin/dashboard"
-                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='Dashboard'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "Dashboard"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                }  w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -60,11 +62,14 @@ export const  Sidebar=({state})=> {
             </a>
           </li>
           <li>
-            <a className="" >
+            <a className="">
               <Link
-                   
                 to="/admin/users"
-                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='users'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`} w-full flex items-center gap-4 px-4 capitalize`}
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "users"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                } w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -90,7 +95,11 @@ export const  Sidebar=({state})=> {
             <a className="">
               <Link
                 to="/admin/tutors"
-                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='tutor'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "tutor"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                }  w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -115,8 +124,12 @@ export const  Sidebar=({state})=> {
           <li>
             <a className="">
               <Link
-                to="/admin/tutors"
-                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${state=='tutor'  ?`bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`:`text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`}  w-full flex items-center gap-4 px-4 capitalize`}
+                to="/admin/tutorsReq"
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "tutorReq"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                }  w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -134,6 +147,36 @@ export const  Sidebar=({state})=> {
                 </svg>
                 <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
                   Tutors Request
+                </p>
+              </Link>
+            </a>
+          </li>
+          <li>
+            <a className="" href="#/dashboard/notifications">
+              <Link
+                to="/admin/category"
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "Category"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                }  w-full flex items-center gap-4 px-4 capitalize`}
+                type="button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="w-5 h-5 text-inherit"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
+                  Catogary
                 </p>
               </Link>
             </a>
@@ -164,11 +207,9 @@ export const  Sidebar=({state})=> {
             </a>
           </li>
         </ul>
-       
       </div>
     </aside>
   );
-}
-
+};
 
 export default Sidebar;

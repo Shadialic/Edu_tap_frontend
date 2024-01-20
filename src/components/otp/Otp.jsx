@@ -74,7 +74,6 @@ function Otp() {
           console.log(res, "??????????????");
           if (res.data.status == 200) {
             console.log(res, "????======");
-
             setPage("password");
           }
         });
@@ -99,7 +98,7 @@ function Otp() {
           if (res.data.status) {
             console.log(res.data.tutor, "52222222555555555");
 
-            toast(res.data.alert);
+            toast('Tutor signup successful. Please wait for admin approval before logging in');
 
             navigate("/vendor/login");
           }

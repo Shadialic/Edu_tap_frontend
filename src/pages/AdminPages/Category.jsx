@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/AdminComponents/Sidebar";
 import Navbar from "../../components/AdminComponents/Navbar";
-import { BlockUnblockTutor, LoadTutorList } from "../../api/adminApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { logoutDetails } from "../../Redux/TutorSlice/tutorSlice";
+import { logoutDetails } from "../../Redux/userSlice/userSlice";
 import { useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,118 +11,139 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-function Tutors() {
+import {
+  Button,
+  Dialog,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+  Checkbox,
+} from "@material-tailwind/react";
+function Category() {
+  const [Category, setCategory] = useState('');
   const dispatch = useDispatch();
-  const [tutor, setTutor] = useState([]);
+  const [user, setUser] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const [searchInput, setSearchInput] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen((cur) => !cur);
 
-  useEffect(() => {
-    LoadTutorList()
-      .then((res) => {
-        const tutorList = res.data.tutordata;
-        const activeTutors = tutorList.filter((item) => item.is_Actived === 'true');
-        setTutor(activeTutors);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const handleblockTutor = async (userId) => {
+  const handleblockuser = async (userId) => {
     try {
-      // Remove the token from localStorage
       localStorage.removeItem("token");
-      // Dispatch logoutDetails action to update Redux state
+
       dispatch(
         logoutDetails({
           id: "",
-          tutorName: "",
+          name: "",
           email: "",
           phone: "",
         })
       );
-
-      // Call BlockUnblockuser API to update user status
-      await BlockUnblockTutor({ _id: userId }).then((res) => {
-        if (res.status === 200) {
-          toast(res.data.alert);
-          // Toggle the 'block' property of the user with the specified 'userId'
-          setTutor((prevTutors) =>
-            prevTutors.map((tutor) =>
-              tutor._id === userId ? { ...tutor, block: !tutor.block } : tutor
-            )
-          );
-        }
-      });
     } catch (error) {
       console.error(error);
     }
   };
-  //===================== SEACHED DATA FETCHING  ============//
-console.log(tutor,'ddddssaaaa');
-  const tutorDatas = tutor.filter((tutor) => {
+
+  const handleSubmit = async(e) => {
+    try{
+        e.preventDefault();
+
+        if(Category===''){
+            toast('Eanter category')
+        }else{
+            await ManageCategory(Category).then((res)=>{
+                console.log(res);
+            })
+        }
+
+    }catch(err){
+        console.log(err);
+    }
+
+
+   
+  };
+  const userDatas = user.filter((user) => {
     const searchLowerCase = searchInput.toLowerCase();
-    const EmailMatch = tutor.email.toLowerCase().includes(searchLowerCase);
-    const nameMatch = tutor.tutorName.toLowerCase().includes(searchLowerCase);
-    const phoneMatch = tutor.phone.toString().includes(searchLowerCase);
+    const EmailMatch = user.email.toLowerCase().includes(searchLowerCase);
+    const nameMatch = user.userName.toLowerCase().includes(searchLowerCase);
+    const phoneMatch = user.phone.toString().includes(searchLowerCase);
 
     return EmailMatch || nameMatch || phoneMatch;
   });
+
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedUserDatas = tutorDatas.slice(startIndex, endIndex);
+  const paginatedUserDatas = userDatas.slice(startIndex, endIndex);
 
+  console.log(userDatas, "userDatasuserDatasuserDatasuserDatasuserDatas");
   return (
     <div>
-      <Sidebar state={"tutor"} />
+      <Sidebar state={"Category"} />
       <Navbar
-        state={"tutor"}
+        state={"Category"}
         searchInput={searchInput}
         setSearchInput={setSearchInput}
       />
+      <div className="flex items-end justify-end mr-14">
+        <Button onClick={handleOpen}>ADD+</Button>
+        <Dialog
+          size="xs"
+          open={open}
+          handler={handleOpen}
+          className="bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20"
+        >
+          <Card className="mx-auto w-full max-w-[24rem]">
+            <CardBody className="flex flex-col gap-4">
+              <form onSubmit={handleSubmit}>
+                {/* ... other form elements ... */}
+                <Typography variant="h6">Enter New Category</Typography>
+                <Input label="category" size="lg" onChange={(e)=>setCategory(e.target.value)} value={Category} />
+              </form>
+            </CardBody>
+            <CardFooter className="pt-0">
+              <Button
+                className="bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20"
+                variant="gradient"
+                onClick={handleOpen}
+                fullWidth
+                type="submit"
+              >
+                Submit
+              </Button>
+            </CardFooter>
+          </Card>
+        </Dialog>
+      </div>
       <div className="mt-12 mb-8 flex flex-col gap-12 p-4 xl:ml-80">
         <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
           <div className="relative bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 shadow-lg -mt-6 mb-8 p-6">
             <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white">
-              Tutors List
+              Categoreas
             </h6>
           </div>
-          <div className="p-6 overflow-x-scroll px-0 pt-0 pb-2">
+          <div className="p-4 overflow-x-scroll px-0 pt-0 pb-2">
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                  <th className="border-b border-blue-gray-40 py-3 px-5 text-left">
                     <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
                       Id
                     </p>
                   </th>
 
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                  <th className="border-b border-blue-gray-40 py-3 px-2 text-center">
                     <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      tutorName
+                      Category
                     </p>
                   </th>
 
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      Email
-                    </p>
-                  </th>
-
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      phone
-                    </p>
-                  </th>
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      ID Proof
-                    </p>
-                  </th>
-
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                  <th className="border-b border-blue-gray-40 py-3 px-2 text-rigth">
                     <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
                       Status
                     </p>
@@ -133,7 +153,7 @@ console.log(tutor,'ddddssaaaa');
                 </tr>
               </thead>
               <tbody>
-                {tutorDatas.map((values, index) => (
+                {userDatas.map((values, index) => (
                   <tr key={values._id}>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
@@ -143,7 +163,7 @@ console.log(tutor,'ddddssaaaa');
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
-                        {values.tutorName}
+                        {values.userName}
                         {/* ... content for the second row ... */}
                       </div>
                     </td>
@@ -161,17 +181,12 @@ console.log(tutor,'ddddssaaaa');
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
-                        <img src={values.image} alt="" />
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
                         {!values.block ? (
                           <button
                             className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
                             data-projection-id="1"
                             style={{ opacity: 1 }}
-                            onClick={() => handleblockTutor(values._id)}
+                            onClick={() => handleblockuser(values._id)}
                           >
                             <span>Block</span>
                           </button>
@@ -180,7 +195,7 @@ console.log(tutor,'ddddssaaaa');
                             className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
                             data-projection-id="1"
                             style={{ opacity: 1 }}
-                            onClick={() => handleblockTutor(values._id)}
+                            onClick={() => handleblockuser(values._id)}
                           >
                             <span>Unblock</span>
                           </button>
@@ -201,7 +216,7 @@ console.log(tutor,'ddddssaaaa');
                   <FontAwesomeIcon icon={faChevronRight} className="text-xl" />
                 }
                 breakLabel={"..."}
-                pageCount={Math.ceil(tutorDatas.length / itemsPerPage)}
+                pageCount={Math.ceil(userDatas.length / itemsPerPage)}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={(data) => setCurrentPage(data.selected)}
@@ -226,4 +241,4 @@ console.log(tutor,'ddddssaaaa');
   );
 }
 
-export default Tutors;
+export default Category;

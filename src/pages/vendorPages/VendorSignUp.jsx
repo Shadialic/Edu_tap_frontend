@@ -1,89 +1,179 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import meta from "../../assets/images/teacher.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { TutorSendingOtp, TutorSignUp } from "../../api/VendorApi";
+import axios from "axios";
+import {
+  TutorSendingOtp,
+  TutorSignUp,
+  tutorRegisterGoogle,
+} from "../../api/VendorApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PropagateLoader from "react-spinners/PropagateLoader";
-// import Otp from "../../components/otp/Otp";
+import { useGoogleLogin } from "@react-oauth/google";
+import { FcGoogle } from "react-icons/fc";
+import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
+import { useDispatch } from "react-redux";
 
 function VendorSignUp() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [clicked, setClicked] = useState(true);
   const [loading, setLoading] = useState(false);
   const [blurBackground, setBlurBackground] = useState(false);
-  const navigate = useNavigate();
+  const [tutor, setTutor] = useState([]);
   const [formData, setFormData] = useState({
     tutorName: "",
     email: "",
     phone: "",
     password: "",
-    image: "",
+    image: null, // Change image to null initially
   });
+  const GoogleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => setTutor(codeResponse),
+    onError: () => toast.error("Google login failed"),
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (tutor) {
+          const response = await axios.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tutor.access_token}`,
+            {
+              headers: {
+                Authorization: `Bearer ${tutor.access_token}`,
+                Accept: "application/json",
+              },
+            }
+          );
+          const result = await tutorRegisterGoogle(response.data);
+          console.log(result, "ldldldld");
+          toast(result.data.alert);
+          if (result.data.created) {
+            toast(result.data.alert);
+            console.log(result);
+            dispatch(
+              setTutorDetailes({
+                tutorName: result.data.tutorName,
+                email: result.data.email,
+                role: "vendor",
+              })
+            );
+            localStorage.setItem("token", result.data.jwtToken);
+            navigate("/vendor");
+          } else {
+            toast.error(result.data.message);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [tutor, dispatch, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData({
       ...formData,
       [name]: value,
     });
   };
+
   const handleBlurBackground = () => {
     setBlurBackground(!blurBackground);
   };
+
+  const handleImageChange = (e) => {
+    const imageFile = e.target.files[0];
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      image: imageFile,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const imageFile = formData.image;
 
-    if (
-      formData.tutorName.trim() === "" ||
-      formData.phone.trim() === "" ||
-      formData.email.trim() === "" ||
-      formData.password.trim() === ""
-    ) {
-      toast.error("Please fill in all required fields");
-      return;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      toast.error("Please enter a valid email address");
-      return;
-    } else if (formData.password.length < 8) {
-      toast.error("Password must be at least 8 characters long");
-      return;
-    } else if (!/[a-z]/.test(formData.password)) {
-      toast.error("Password must contain at least one lowercase letter");
-      return;
-    } else if (!/[A-Z]/.test(formData.password)) {
-      toast.error("Password must contain at least one uppercase letter");
-      return;
-    } else if (!/\d/.test(formData.password)) {
-      toast.error("Password must contain at least one number");
-      return;
-    } else if (
-      !/^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/.test(formData.phone)
-    ) {
-      toast.error("Please enter a valid phone number");
-      return;
-    } else {
-      handleBlurBackground();
-      setLoading(true);
-      toast.success("Form submitted successfully!");
+    try {
+      if (
+        formData.tutorName.trim() === "" ||
+        formData.phone.trim() === "" ||
+        formData.email.trim() === "" ||
+        formData.password.trim() === ""
+      ) {
+        toast.error("Please fill in all required fields");
+        return;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        toast.error("Please enter a valid email address");
+        return;
+      } else if (formData.password.length < 8) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      } else if (!/[a-z]/.test(formData.password)) {
+        toast.error("Password must contain at least one lowercase letter");
+        return;
+      } else if (!/[A-Z]/.test(formData.password)) {
+        toast.error("Password must contain at least one uppercase letter");
+        return;
+      } else if (!/\d/.test(formData.password)) {
+        toast.error("Password must contain at least one number");
+        return;
+      } else if (
+        !/^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/.test(formData.phone)
+      ) {
+        toast.error("Please enter a valid phone number");
+        return;
+      } else if (!imageFile) {
+        toast.error("Please select an image file");
+        return;
+      } else {
+        handleBlurBackground();
+        setLoading(true);
+        toast.success("Form submitted successfully!");
 
-      const tutorData = await TutorSignUp(formData).then((res) => {
-        toast(res.data.alert);
-        if (res.status === 201) {
-          const dataOtp = { email: formData.email };
-          const Tutorotp = TutorSendingOtp(dataOtp).then((response) => {
-            if (response.status === 200) {
+        console.log("Form submitted with data:", formData);
+
+        // Create FormData and append the image file
+        const formDataToSend = new FormData();
+        formDataToSend.append("tutorName", formData.tutorName);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("phone", formData.phone);
+        formDataToSend.append("password", formData.password);
+        formDataToSend.append("image", formData.image);
+
+        const tutorData = await TutorSignUp(formDataToSend);
+
+        if (tutorData && tutorData.data) {
+          toast(tutorData.data.alert);
+
+          if (tutorData.status === 201) {
+            const dataOtp = { email: formData.email };
+            const Tutorotp = await TutorSendingOtp(dataOtp);
+
+            if (Tutorotp && Tutorotp.status === 200) {
               navigate("/vendor/otp", { state: { type: "vendor" } });
             } else {
-              toast(tutorData.data.alert);
+              toast.error(Tutorotp.data.alert);
             }
-          });
+          }
+        } else {
+          toast.error("Unexpected response from the server");
         }
-      });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("An error occurred while submitting the form");
+    } finally {
+      setLoading(false);
     }
+
     console.log("Form submitted with data:", formData);
   };
+
   const [activeTab, setActiveTab] = useState("student");
 
   const handleTabClick = (tab) => {
@@ -110,7 +200,6 @@ function VendorSignUp() {
           <div className="justify-center items-center text-center hidden lg:flex flex-col lg:w-1/2 relative">
             <div className="font-semibold text-lg w-full">
               <span className="font-bold text-4xl">Edu-tap</span>
-              {/* <h4 className="text-3xl ml-16">E-Learning Platform</h4> */}
               <img className="w-full" src={meta} alt="" />
             </div>
           </div>
@@ -135,7 +224,7 @@ function VendorSignUp() {
             </div>
 
             <div>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="flex flex-col justify-center gap-3 px-5 py-2">
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
@@ -151,7 +240,7 @@ function VendorSignUp() {
                           name="tutorName"
                           id="tutorName"
                           className="border p-2 text-[14px] w-[250px] sm:w-[280px] rounded-md outline-none shadow-md"
-                          placeholder=" Enter an Name "
+                          placeholder=" Enter a Name "
                           value={formData.tutorName}
                           onChange={handleChange}
                         />
@@ -189,14 +278,14 @@ function VendorSignUp() {
                           name="phone"
                           id="phone"
                           className="border p-2 text-[14px] w-[250px] sm:w-[280px] rounded-md outline-none shadow-md"
-                          placeholder=" Enter an Number "
+                          placeholder=" Enter a Number "
                           value={formData.phone}
                           onChange={handleChange}
                         />
                       </div>
                     </div>
 
-                    <div className="flex flex-col ">
+                    <div className="flex flex-col">
                       <label
                         htmlFor="password"
                         className="text-[14px] text-shadow-black"
@@ -226,9 +315,7 @@ function VendorSignUp() {
                               className="cursor-pointer"
                             >
                               {clicked ? (
-                                <FaEyeSlash
-                                  onClick={() => setClicked(false)}
-                                />
+                                <FaEyeSlash onClick={() => setClicked(false)} />
                               ) : (
                                 <FaRegEye onClick={() => setClicked(true)} />
                               )}
@@ -237,7 +324,7 @@ function VendorSignUp() {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1">
                       <label
                         htmlFor="image"
                         className="text-[14px] text-shadow-black"
@@ -249,13 +336,12 @@ function VendorSignUp() {
                           type="file"
                           name="image"
                           id="image"
-                          accept='image/*'
-                        
+                          accept="image/*"
                           className="border p-2 text-[14px] w-[250px] sm:w-[280px] rounded-md outline-none shadow-md"
                           onChange={handleImageChange}
                         />
                       </div>
-                    </div> */}
+                    </div>
                   </div>
 
                   <div className="flex flex-col items-center mt-3">
@@ -280,10 +366,15 @@ function VendorSignUp() {
                 <div className="border w-10"></div>
               </div>
               <div className="flex flex-col items-center justify-center w-full gap-4">
-                <div className="flex justify-center border items-center gap-5 rounded-md p-1 w-full shadow-md transition duration-500 hover:scale-105 cursor-pointer">
+                <div
+                  onClick={() => GoogleLogin()}
+                  className="flex justify-center border items-center gap-5 rounded-md p-1 w-10/12 shadow-md transition duration-500 hover:scale-105 cursor-pointer"
+                >
                   {/* Google Sign-In Button */}
-                  <div className='style="height: 32px;'>
+                  <FcGoogle />
+                  <div className='style="height: 32px; pr-3'>
                     {/* Add your Google Sign-In button here */}
+                    sign in with Google
                   </div>
                 </div>
               </div>

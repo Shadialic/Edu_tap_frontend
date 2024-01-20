@@ -26,6 +26,8 @@ export async function LoadUserList(userData) {
 
 export async function LoadTutorList(tutorData) {
   try {
+    console.log(tutorData);
+
     const admindata = await AdminApi.post("/loadtutor", tutorData);
     console.log(admindata, "admindata");
     return admindata;
@@ -54,4 +56,23 @@ export async function BlockUnblockTutor(tutorData){
     } catch (error) {
        console.log(error) 
     }
+    }
+    export async function apporvTutor(tutorId) {
+      try {
+          console.log(tutorId);
+        const response = await AdminApi.put("/approvTutor", tutorId);
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    export async function ManageCategory(category) {
+      try {
+          console.log(tutorId);
+        const response = await AdminApi.post("/addCategory", category);
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
     }

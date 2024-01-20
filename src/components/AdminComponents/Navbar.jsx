@@ -1,9 +1,8 @@
 import React, { useState  } from "react";
 
 const Navbar = ({ state, searchInput, setSearchInput }) => {
-  const [currentState, setCurrentState] = useState(state);
-  // const [filteredItems, setFilteredItems] = useState([]);
 
+  const [currentState, setCurrentState] = useState(state);
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };

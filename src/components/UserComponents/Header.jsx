@@ -57,7 +57,7 @@ function Header() {
 
   return (
     <div>
-      <div className="flex">
+      <div className="flex ">
         <div className="flex flex-row items-center">
           <img src={logo} alt="" className="w-18 h-16 ml-3" />
           <h2 className="text-2xl font-prompt font-prompt-normal mt-2  text-[#000000]">

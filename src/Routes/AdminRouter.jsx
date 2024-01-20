@@ -4,7 +4,8 @@ import AdminLoginPage from '../pages/AdminPages/AdminLoginPage'
 import Dashboard from '../pages/AdminPages/Dashboard';
 import Users from '../pages/AdminPages/Users';
 import Tutors from '../pages/AdminPages/Tutors';
-
+import TutorReq from '../pages/AdminPages/TutorReq'
+import Category from '../pages/AdminPages/Category';
 function AdminRouter() {
   return (
     <div>
@@ -13,6 +14,10 @@ function AdminRouter() {
       <Route path="/dashboard" exact element={<Dashboard/>} /> 
       <Route path="/users" exact element={<Users/>} /> 
       <Route path="/tutors" exact element={<Tutors/>} /> 
+      <Route path="/tutorsReq" exact element={<TutorReq/>} /> 
+      <Route path="/category" exact element={<Category/>} /> 
+
+
 
       </Routes>
     </div>

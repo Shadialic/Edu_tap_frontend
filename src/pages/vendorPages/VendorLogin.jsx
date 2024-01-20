@@ -1,22 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import meta from "../../assets/images/web.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { setTutorDetailes } from "../../Redux/TutorSlice/tutorSlice";
 import PropagateLoader from "react-spinners/PropagateLoader";
-import { tutorLogin } from "../../api/VendorApi";
+import { tutorLogin, tutorRegisterGoogle } from "../../api/VendorApi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
+import { ToastContainer, toast } from "react-toastify";
 
 function VendorLogin() {
-  const dispatch=useDispatch()
-  const navigate=useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [clicked, setClicked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tutor, setTutor] = useState([]);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const GoogleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => setTutor(codeResponse),
+    onError: () => toast.error("Goole login failed"),
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (tutor) {
+          const response = await axios.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tutor.access_token}`,
+            {
+              headers: {
+                Authorization: `Bearer ${tutor.access_token}`,
+                Accept: "application/json",
+              },
+            }
+          );
+          const result = await tutorRegisterGoogle(response.data);
+          console.log(result, "ldldldld");
+          toast(result.data.alert);
+          if (result.data.created) {
+            toast(result.data.alert);
+            console.log(result);
+            dispatch(
+              setTutorDetailes({
+                id: result.data.tutorData._id, 
+                tutorName: result.data.tutorName,
+                email: result.data.email,
+                phone: result.data.phone,
+                image: result.data.image,
+              })
+            );
+            localStorage.setItem("token", result.data.jwtToken);
+            navigate("/vendor");
+          } else {
+            toast.error(result.data.message);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [tutor, dispatch, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,8 +91,8 @@ function VendorLogin() {
           email: formData.email,
           password: formData.password,
         });
-        console.log(loginResponse);
-        if (loginResponse.data) {
+        console.log(loginResponse.data.status,'p-p-p-');
+        if (loginResponse.data.status) {
           localStorage.setItem("token", loginResponse.data.token);
           dispatch(
             setTutorDetailes({
@@ -54,11 +104,14 @@ function VendorLogin() {
           );
           navigate("/vendor/");
         } else {
+          console.log('pppppppp[pp-p');
           toast(loginResponse.data.alert);
         }
       }
     } catch (err) {
       console.log(err);
+    }finally{
+      setLoading(false)
     }
     console.log("Form submitted with data:", formData);
   };
@@ -165,6 +218,7 @@ function VendorLogin() {
                   </div>
                 </div>
               </form>
+              <ToastContainer />
 
               <div className="text-[13px] text-gray-400 flex justify-center items-center gap-2">
                 <div className="border w-10"></div>
@@ -172,10 +226,15 @@ function VendorLogin() {
                 <div className="border w-10"></div>
               </div>
               <div className="flex flex-col items-center justify-center w-full gap-4">
-                <div className="flex justify-center border items-center gap-5 rounded-md p-1 w-full shadow-md transition duration-500 hover:scale-105 cursor-pointer">
+                <div
+                  onClick={() => GoogleLogin()}
+                  className="flex justify-center border items-center gap-5 rounded-md p-1 w-10/12 shadow-md transition duration-500 hover:scale-105 cursor-pointer"
+                >
                   {/* Google Sign-In Button */}
-                  <div className='style="height: 32px;'>
+                  <FcGoogle />
+                  <div className='style="height: 32px; pr-3'>
                     {/* Add your Google Sign-In button here */}
+                    sign in with Google
                   </div>
                 </div>
               </div>
@@ -192,6 +251,7 @@ function VendorLogin() {
           </div>
         </div>
       </div>
+
     </>
   );
 }

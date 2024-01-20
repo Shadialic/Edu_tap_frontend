@@ -8,7 +8,7 @@ import {
   userSignUp,
 } from "../../api/userApi";
 import { ToastContainer, toast } from "react-toastify";
-import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import {useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
