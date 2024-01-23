@@ -97,7 +97,6 @@ function VendorSignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const imageFile = formData.image;
-
     try {
       if (
         formData.tutorName.trim() === "" ||
@@ -144,16 +143,12 @@ function VendorSignUp() {
         formDataToSend.append("phone", formData.phone);
         formDataToSend.append("password", formData.password);
         formDataToSend.append("image", formData.image);
-
         const tutorData = await TutorSignUp(formDataToSend);
-
         if (tutorData && tutorData.data) {
           toast(tutorData.data.alert);
-
           if (tutorData.status === 201) {
             const dataOtp = { email: formData.email };
             const Tutorotp = await TutorSendingOtp(dataOtp);
-
             if (Tutorotp && Tutorotp.status === 200) {
               navigate("/vendor/otp", { state: { type: "vendor" } });
             } else {
@@ -170,12 +165,9 @@ function VendorSignUp() {
     } finally {
       setLoading(false);
     }
-
     console.log("Form submitted with data:", formData);
   };
-
   const [activeTab, setActiveTab] = useState("student");
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     if (tab === "student") {
@@ -284,7 +276,6 @@ function VendorSignUp() {
                         />
                       </div>
                     </div>
-
                     <div className="flex flex-col">
                       <label
                         htmlFor="password"

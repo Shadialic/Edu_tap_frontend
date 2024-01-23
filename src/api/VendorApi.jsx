@@ -52,4 +52,16 @@ export async function tutorRegisterGoogle(tutorData) {
     }
   }
  
+  export async function CoursrManage(newData) {
+    try {
+        console.log(newData,'newData');
+      const response = await TutorApi.post("/vendor/loadCourse", newData,{headers:{
+        "Content-Type": "multipart/form-data",
+       }});
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+ 
 

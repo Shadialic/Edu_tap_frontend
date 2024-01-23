@@ -34,7 +34,7 @@ const Card_Dashboard = () => {
       color: 'gray',
       icon: BanknotesIcon,
       title: 'Pending Courses',
-      value: '0',
+      value: '0~',
       footer: {
         color: 'text-red-500',
         value: '-2%',

@@ -1,14 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import { Link } from "react-router-dom";
 
-import PropTypes from "prop-types";
-import { Link, NavLink } from "react-router-dom";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  Avatar,
-  Button,
-  IconButton,
-  Typography,
-} from "@material-tailwind/react";
 import logo from "../../assets/images/logo.png";
 
 export const Sidebar = ({ state }) => {
@@ -184,7 +176,12 @@ export const Sidebar = ({ state }) => {
           <li>
             <a className="" href="#/dashboard/notifications">
               <Link
-                className="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 w-full flex items-center gap-4 px-4 capitalize"
+              to='/admin/course'
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "Course"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                }  w-full flex items-center gap-4 px-4 capitalize`}
                 type="button"
               >
                 <svg
@@ -201,7 +198,7 @@ export const Sidebar = ({ state }) => {
                   ></path>
                 </svg>
                 <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
-                  Courses
+                Course Control
                 </p>
               </Link>
             </a>

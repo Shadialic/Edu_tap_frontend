@@ -1,10 +1,77 @@
 import React, { useState } from "react";
-// import { UserCircleIcon, PhotographIcon } from "@heroicons/react/solid";
 import form_img from "../../../../public/images/tutor/Add files-bro.png";
+import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { CoursrManage } from "../../../api/VendorApi";
 function Form() {
+  // const { category } = useParams();
+
   const [payment, setPayment] = useState("free");
-  const [level, setLevel] = useState("Biginner");
-  const [Category, setCategory] = useState("Editing");
+  const [level, setLevel] = useState("beginner");
+  const [category, setCategory] = useState("Editing");
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    price: "",
+    image: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      price: name === "price" ? value : formData.price,
+      category: name === "Category" ? value : formData.category,
+      level: name === "level" ? value : formData.level,
+      payment: name === "payment" ? value : formData.payment,
+      [name]: value,
+    });
+  };
+  const handleImageChange = (e) => {
+    const imageFile = e.target.files[0];
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      image: imageFile,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      formData.title === "" ||
+      formData.description === "" ||
+      !formData.image
+    ) {
+      toast.error("Please fill in all required fields and select an image");
+    } else {
+      const courseData = {
+        ...formData,
+        category,
+        level,
+        payment,
+      };
+      console.log(courseData, "formData");
+      await CoursrManage(courseData)
+        .then((res) => {
+          toast(res.data.alert);
+          console.log(res);
+          setFormData({
+            title: "",
+            description: "",
+            price: "",
+            image: null,
+          });
+          setPayment("free");
+          setLevel("beginner");
+          setCategory("Editing");
+        })
+        .catch((error) => {
+          console.error("Error in CoursrManage:", error);
+          toast.error("Error while saving the course. Please try again.");
+        });
+    }
+  };
 
   return (
     <div className="flex">
@@ -12,7 +79,7 @@ function Form() {
         <img src={form_img} alt="" />
       </div>
       <div className="p-6 w-3/5">
-        <form className="p-5">
+        <form className="p-5" onSubmit={handleSubmit}>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-3xl font-prompt font-semibold leading-7 text-violet-700">
@@ -34,9 +101,11 @@ function Form() {
                         type="text"
                         name="title"
                         id="title"
+                        value={formData.title}
                         autoComplete="title"
                         className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-lightBlue-950 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter Course Title"
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -68,6 +137,8 @@ function Form() {
                     </label>
                     <div className="mt-2">
                       <input
+                        value={formData.price}
+                        onChange={handleChange}
                         type="number"
                         name="price"
                         id="price"
@@ -95,11 +166,11 @@ function Form() {
                 </div>
                 <div className="sm:col-span-3">
                   <label className="block text-sm font-medium leading-6 text-black">
-                    Level
+                    Category
                   </label>
                   <div className="mt-2">
                     <select
-                      value={Category}
+                      value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       className="block w-full rounded-md border-0 py-1.5 text-lightBlue-950 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     >
@@ -115,15 +186,17 @@ function Form() {
 
                 <div className="col-span-full">
                   <label
-                    htmlFor="about"
+                    htmlFor="description"
                     className="block text-sm font-medium leading-6 text-black"
                   >
                     About
                   </label>
                   <div className="mt-2">
                     <textarea
-                      id="about"
-                      name="about"
+                      id="description"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
                       rows={3}
                       className="block w-full rounded-md border-0 py-1.5 text-lightBlue-950 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset "
                       defaultValue={""}
@@ -157,6 +230,8 @@ function Form() {
                             id="file-upload"
                             name="file-upload"
                             type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
                             className="sr-only"
                           />
                         </label>
@@ -187,6 +262,7 @@ function Form() {
             </button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

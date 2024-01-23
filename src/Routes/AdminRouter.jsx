@@ -6,6 +6,7 @@ import Users from '../pages/AdminPages/Users';
 import Tutors from '../pages/AdminPages/Tutors';
 import TutorReq from '../pages/AdminPages/TutorReq'
 import Category from '../pages/AdminPages/Category';
+import CourseList from '../pages/AdminPages/CourseList';
 function AdminRouter() {
   return (
     <div>
@@ -16,6 +17,8 @@ function AdminRouter() {
       <Route path="/tutors" exact element={<Tutors/>} /> 
       <Route path="/tutorsReq" exact element={<TutorReq/>} /> 
       <Route path="/category" exact element={<Category/>} /> 
+      <Route path="/course" exact element={<CourseList/>} /> 
+
 
 
 

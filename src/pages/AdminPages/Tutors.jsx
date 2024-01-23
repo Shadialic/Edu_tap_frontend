@@ -33,9 +33,8 @@ function Tutors() {
 
   const handleblockTutor = async (userId) => {
     try {
-      // Remove the token from localStorage
       localStorage.removeItem("token");
-      // Dispatch logoutDetails action to update Redux state
+  
       dispatch(
         logoutDetails({
           id: "",
@@ -74,7 +73,7 @@ console.log(tutor,'ddddssaaaa');
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedUserDatas = tutorDatas.slice(startIndex, endIndex);
-
+console.log(tutor,'==========================================,,,,,,,,,,,,,,,,,,,,,,,,,,,,');
   return (
     <div>
       <Sidebar state={"tutor"} />
@@ -161,7 +160,9 @@ console.log(tutor,'ddddssaaaa');
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
-                        <img src={values.image} alt="" />
+                        
+                        {/* <img src={values.image} alt="Image" className="w-10 h-10" /> */}
+                        <img src='public\images\1705919608219-Add files-bro.png' alt="Image" className="w-10 h-10" />
                       </div>
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">

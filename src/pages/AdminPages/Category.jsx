@@ -15,108 +15,105 @@ import {
   Button,
   Dialog,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
   Typography,
   Input,
-  Checkbox,
 } from "@material-tailwind/react";
+import { ManageCategory, loadCategory } from "../../api/adminApi";
+import { Link } from "react-router-dom";
+
 function Category() {
-  const [Category, setCategory] = useState('');
-  const dispatch = useDispatch();
-  const [user, setUser] = useState([]);
+  const [CategoryName, setCategoryName] = useState("");
+  const [category, setCategory] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen((cur) => !cur);
+
+  useEffect(() => {
+    loadCategory().then((res) => {
+      console.log(res, "res");
+      const newData = res.data.data;
+      console.log(newData, "newData");
+      setCategory(newData);
+    });
+  }, []);
+
+  console.log(category, "[][][]");
 
   const handleblockuser = async (userId) => {
     try {
-      localStorage.removeItem("token");
-
-      dispatch(
-        logoutDetails({
-          id: "",
-          name: "",
-          email: "",
-          phone: "",
-        })
-      );
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleSubmit = async(e) => {
-    try{
-        e.preventDefault();
-
-        if(Category===''){
-            toast('Eanter category')
-        }else{
-            await ManageCategory(Category).then((res)=>{
-                console.log(res);
-            })
-        }
-
-    }catch(err){
-        console.log(err);
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      if (CategoryName === "") {
+        toast("Enter category");
+      } else {
+        setOpen(false);
+        const data = { categoryname: CategoryName };
+        const response = await ManageCategory(data);
+        toast(response.data.alert);
+      }
+    } catch (err) {
+      console.log(err);
     }
-
-
-   
   };
-  const userDatas = user.filter((user) => {
-    const searchLowerCase = searchInput.toLowerCase();
-    const EmailMatch = user.email.toLowerCase().includes(searchLowerCase);
-    const nameMatch = user.userName.toLowerCase().includes(searchLowerCase);
-    const phoneMatch = user.phone.toString().includes(searchLowerCase);
 
-    return EmailMatch || nameMatch || phoneMatch;
+  const filteredData = category.filter((category) => {
+    const searchLowerCase = searchInput.toLowerCase();
+    return category.categoryName.toLowerCase().includes(searchLowerCase);
   });
 
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedUserDatas = userDatas.slice(startIndex, endIndex);
+  const paginatedData = filteredData.slice(startIndex, endIndex);
 
-  console.log(userDatas, "userDatasuserDatasuserDatasuserDatasuserDatas");
   return (
     <div>
       <Sidebar state={"Category"} />
       <Navbar
+     
         state={"Category"}
         searchInput={searchInput}
         setSearchInput={setSearchInput}
       />
+      <Link to={`/vendor/${category}`}></Link>
       <div className="flex items-end justify-end mr-14">
-        <Button onClick={handleOpen}>ADD+</Button>
+        <Button onClick={() => setOpen((cur) => !cur)}>ADD+</Button>
         <Dialog
           size="xs"
           open={open}
-          handler={handleOpen}
+          handler={() => setOpen((cur) => !cur)}
           className="bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20"
         >
           <Card className="mx-auto w-full max-w-[24rem]">
             <CardBody className="flex flex-col gap-4">
               <form onSubmit={handleSubmit}>
-                {/* ... other form elements ... */}
                 <Typography variant="h6">Enter New Category</Typography>
-                <Input label="category" size="lg" onChange={(e)=>setCategory(e.target.value)} value={Category} />
+                <Input
+                  label="Category"
+                  size="lg"
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  value={CategoryName}
+                />
+                <CardFooter className="pt-0 mt-5">
+                  <Button
+                    className="bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 "
+                    variant="gradient"
+                    fullWidth
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
+                </CardFooter>
               </form>
             </CardBody>
-            <CardFooter className="pt-0">
-              <Button
-                className="bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20"
-                variant="gradient"
-                onClick={handleOpen}
-                fullWidth
-                type="submit"
-              >
-                Submit
-              </Button>
-            </CardFooter>
           </Card>
         </Dialog>
       </div>
@@ -124,7 +121,7 @@ function Category() {
         <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
           <div className="relative bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 shadow-lg -mt-6 mb-8 p-6">
             <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white">
-              Categoreas
+              Categories
             </h6>
           </div>
           <div className="p-4 overflow-x-scroll px-0 pt-0 pb-2">
@@ -136,54 +133,38 @@ function Category() {
                       Id
                     </p>
                   </th>
-
                   <th className="border-b border-blue-gray-40 py-3 px-2 text-center">
                     <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
                       Category
                     </p>
                   </th>
-
                   <th className="border-b border-blue-gray-40 py-3 px-2 text-rigth">
                     <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
                       Status
                     </p>
                   </th>
-
-                  {/* ... other table header cells ... */}
                 </tr>
               </thead>
               <tbody>
-                {userDatas.map((values, index) => (
+                {paginatedData.map((values, index) => (
                   <tr key={values._id}>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        {index + 1}
-                        {/* ... content for the second row ... */}
+                      <div className="flex items-center gap-4">{index + 1}</div>
+                    </td>
+                    <td className="py-3 px-8 border-b border-blue-gray-50">
+                      {" "}
+                      {/* Increased right padding for categoryName */}
+                      <div className="flex items-center justify-center gap-4 ">
+                        {values.categoryName}
                       </div>
                     </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        {values.userName}
-                        {/* ... content for the second row ... */}
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        {values.email}
-                        {/* ... content for the third row ... */}
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        {values.phone}
-                        {/* ... content for the fourth row ... */}
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
+                    <td className="py-3 px-3 border-b border-blue-gray-50">
+                      <div className="flex items-center gap-4  justify-around">
+                        {" "}
+                        {/* Align buttons to the right */}
                         {!values.block ? (
                           <button
-                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
+                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 rounded-lg py-0.5 px-2 text-[11px] font-medium w-auto"
                             data-projection-id="1"
                             style={{ opacity: 1 }}
                             onClick={() => handleblockuser(values._id)}
@@ -192,7 +173,7 @@ function Category() {
                           </button>
                         ) : (
                           <button
-                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20  rounded-lg py-0.5 px-2 text-[11px] font-medium w-fit"
+                            className="relative grid items-center font-sans uppercase whitespace-nowrap select-none bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 rounded-lg py-0.5 px-2 text-[11px] font-medium w-auto"
                             data-projection-id="1"
                             style={{ opacity: 1 }}
                             onClick={() => handleblockuser(values._id)}
@@ -202,7 +183,6 @@ function Category() {
                         )}
                       </div>
                     </td>
-                    {/* ... other table cells ... */}
                   </tr>
                 ))}
               </tbody>
@@ -216,7 +196,7 @@ function Category() {
                   <FontAwesomeIcon icon={faChevronRight} className="text-xl" />
                 }
                 breakLabel={"..."}
-                pageCount={Math.ceil(userDatas.length / itemsPerPage)}
+                pageCount={Math.ceil(filteredData.length / itemsPerPage)}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={(data) => setCurrentPage(data.selected)}
@@ -228,7 +208,7 @@ function Category() {
                   "border bg-[#075985] text-white rounded px-3 py-2 hover:bg-lightBlue-950"
                 }
                 nextClassName={
-                  "border  bg-[#075985] text-white rounded px-3 py-2 hover:bg-lightBlue-950"
+                  "border bg-[#075985] text-white rounded px-3 py-2 hover:bg-lightBlue-950"
                 }
                 disabledClassName={"opacity-110"}
               />

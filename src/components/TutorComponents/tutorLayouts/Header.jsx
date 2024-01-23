@@ -30,7 +30,7 @@ function Header() {
 
   const nav_title = [
     {
-      path: "/",
+      path: "/vendor/",
       display: "Home",
     },
     {
