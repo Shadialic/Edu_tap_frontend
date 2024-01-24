@@ -96,4 +96,14 @@ export async function LoadCourse(newData) {
     console.log(error);
   }
 }
+export async function manageCourse(Course_id) {
+  try {
+    console.log(Course_id,'Course_id');
+    const response = await AdminApi.put("/manageCourse", Course_id);
+    console.log(response, "\\\\\\");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
 

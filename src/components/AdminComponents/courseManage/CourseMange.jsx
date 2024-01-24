@@ -7,6 +7,7 @@ import ApproveCourse from "./approveCourse";
 function CourseMange() {
   const [course, setCourse] = useState([]);
   const [isOpn, setOpn] = useState(false);
+  const [currentCourseId, setCurrentCourseId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const [searchInput, setSearchInput] = useState("");
@@ -29,8 +30,8 @@ function CourseMange() {
           course[prop].toString().toLowerCase().includes(searchLowerCase)
       );
     });
-  const exploredata = async () => {
-    console.log("ssfs");
+  const exploredata = async (courseId) => {
+    setCurrentCourseId(courseId);
     setOpn(true);
   };
   console.log(courseDatas, "courseDatas");
@@ -57,37 +58,15 @@ function CourseMange() {
                         Id
                       </p>
                     </th>
-
                     <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
                       <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
                         Title
                       </p>
                     </th>
 
-                    {/* <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      Discription
-                    </p>
-                  </th> */}
-                    {/* <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      Category
-                    </p>
-                  </th> */}
-                    {/* <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      level
-                    </p>
-                  </th> */}
-                    {/* 
-                  <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                      Payment
-                    </p>
-                  </th> */}
                     <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
                       <p className="block antialiased font-sans text-[11px] font-bold uppercase text-blue-gray-400">
-                        price
+                        Category
                       </p>
                     </th>
 
@@ -101,8 +80,7 @@ function CourseMange() {
                         Status
                       </p>
                     </th>
-
-                    {/* ... other table header cells ... */}
+                   
                   </tr>
                 </thead>
                 {
@@ -119,37 +97,19 @@ function CourseMange() {
                             {values.title}
                           </div>
                         </td>
-                        {/* <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <div className="flex items-center gap-4">
-                          {values.description}
-                        </div>
-                      </td> */}
-                        {/* <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <div className="flex items-center gap-4">
-                          {values.category}
-                        </div>
-                      // </td> */}
-                        {/* // <td className="py-3 px-5 border-b border-blue-gray-50">
-                      //   <div className="flex items-center gap-4">
-                      //     {values.level}
-                      //   </div>
-                      // </td> */}
-                        {/* <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <div className="flex items-center gap-4">
-                          {values.payment}
-                        </div>
-                      </td> */}
+
                         <td className="py-3 px-5 border-b border-blue-gray-50">
                           <div className="flex items-center gap-4">
-                            {values.price}
+                            {values.category}
                           </div>
                         </td>
+
                         <td className="py-3 px-5 border-b border-blue-gray-50">
                           <div className="flex items-center gap-4">
                             {/* {values.image} */}
 
                             <img
-                              src="public\images\1705919608219-Add files-bro.png"
+                              src={values.image}
                               alt="Image"
                               className="w-10 h-10"
                             />
@@ -203,11 +163,10 @@ function CourseMange() {
           </div>
         </div>
       ) : (
-        <ApproveCourse 
-        course={course}
-        setCourse={setCourse}
-
-
+        <ApproveCourse
+          courseId={currentCourseId}
+          course={course}
+          setCourse={setCourse}
         />
       )}
     </div>

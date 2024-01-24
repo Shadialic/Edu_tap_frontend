@@ -1,21 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import form_img from "../../../../public/images/tutor/Add files-bro.png";
-import { useParams } from "react-router-dom";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { CoursrManage } from "../../../api/VendorApi";
-function Form() {
-  // const { category } = useParams();
+import { CoursrManage, getCategory } from "../../../api/VendorApi";
 
+function Form() {
   const [payment, setPayment] = useState("free");
   const [level, setLevel] = useState("beginner");
-  const [category, setCategory] = useState("Editing");
+  const [category, setCategory] = useState("Select a Category");
+  const [categorease, setCategoreas] = useState();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     price: "",
     image: null,
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getCategory();
+        const data = res.data.newData;
+        const categoreas = data.map((item) => item.categoryName);
+        setCategoreas(categoreas);
+      } catch (error) {
+        console.error("Error fetching category data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +44,7 @@ function Form() {
       [name]: value,
     });
   };
+
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
     setFormData((prevFormData) => ({
@@ -52,24 +69,22 @@ function Form() {
         payment,
       };
       console.log(courseData, "formData");
-      await CoursrManage(courseData)
-        .then((res) => {
-          toast(res.data.alert);
-          console.log(res);
-          setFormData({
-            title: "",
-            description: "",
-            price: "",
-            image: null,
-          });
-          setPayment("free");
-          setLevel("beginner");
-          setCategory("Editing");
-        })
-        .catch((error) => {
-          console.error("Error in CoursrManage:", error);
-          toast.error("Error while saving the course. Please try again.");
+      try {
+        const res = await CoursrManage(courseData);
+        toast(res.data.alert);
+        console.log(res);
+        setFormData({
+          title: "",
+          description: "",
+          price: "",
+          image: null,
         });
+        setPayment("free");
+        setLevel("beginner");
+      } catch (error) {
+        console.error("Error in CoursrManage:", error);
+        toast.error("Error while saving the course. Please try again.");
+      }
     }
   };
 
@@ -83,10 +98,10 @@ function Form() {
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-3xl font-prompt font-semibold leading-7 text-violet-700">
-                Course Deatails
+                Course Details
               </h2>
               <p className="mt-1 text-base leading-6 text-gray-600">
-                This information will be displayed publicly so be careful what
+                This information will be displayed publicly, so be careful what
                 you share.
               </p>
 
@@ -148,6 +163,7 @@ function Form() {
                     </div>
                   </div>
                 )}
+
                 <div className="sm:col-span-3">
                   <label className="block text-sm font-medium leading-6 text-black">
                     Level
@@ -164,22 +180,26 @@ function Form() {
                     </select>
                   </div>
                 </div>
+
                 <div className="sm:col-span-3">
                   <label className="block text-sm font-medium leading-6 text-black">
                     Category
                   </label>
                   <div className="mt-2">
                     <select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      value={formData.category}
+                      onChange={handleChange}
                       className="block w-full rounded-md border-0 py-1.5 text-lightBlue-950 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     >
-                      <option value="Editing">Editing</option>
-                      <option value="VedieoGraphy">Vedieo Graphy</option>
-                      <option value="PhotoGraphy">Photo Graphy</option>
-                      <option value="ProductPhotoGraphy">
-                        Product Photo Graphy
-                      </option>
+                      {categorease &&
+                        categorease.map((item) => (
+                          <option
+                            key={item}
+                            value={item}
+                          >
+                            {item}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </div>
@@ -203,7 +223,7 @@ function Form() {
                     />
                   </div>
                   <p className="mt-3 text-sm leading-6 text-gray-600">
-                    Write a about a course.
+                    Write about the course.
                   </p>
                 </div>
 
@@ -216,10 +236,6 @@ function Form() {
                   </label>
                   <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                     <div className="text-center">
-                      {/* <PhotoIcon
-                      className="mx-auto h-12 w-12 text-gray-300"
-                      aria-hidden="true"
-                    /> */}
                       <div className="mt-4 flex text-sm leading-6 text-gray-600">
                         <label
                           htmlFor="file-upload"

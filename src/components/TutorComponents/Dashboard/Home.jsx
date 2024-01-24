@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import home_image from "../../../../public/images/tutor/Online world-bro.png";
-import bg from '../../../../public/images/tutor/bg-home.jpg';
+import bg from "../../../../public/images/tutor/bg-home.jpg";
 import Form from "../add_form/Form";
 
 function Home() {

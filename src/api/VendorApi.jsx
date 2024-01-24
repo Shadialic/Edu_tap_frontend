@@ -63,5 +63,15 @@ export async function tutorRegisterGoogle(tutorData) {
       console.log(error);
     }
   }
+
+  export async function getCategory(category) {
+    try {
+      const response = await TutorApi.get("/vendor/getCategory", category);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+ 
  
 
