@@ -100,7 +100,6 @@ export const Sidebar = ({ state }) => {
                 type="button"
               >
                 <img className="w-5 h-5 text-inherit" src={tutor} alt="" />
-
                 <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
                   Tutors
                 </p>
@@ -119,9 +118,31 @@ export const Sidebar = ({ state }) => {
                 type="button"
               >
                 <img className="w-5 h-5 text-inherit" src={tutorReq} alt="" />
-
                 <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
                   Tutors Request
+                </p>
+              </Link>
+            </a>
+          </li>
+          <li>
+            <a className="" href="#/dashboard/notifications">
+              <Link
+                to="/admin/displayCourse"
+                className={`align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg ${
+                  state == "disCourses"
+                    ? `bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white`
+                    : `text-blue-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30`
+                }  w-full flex items-center gap-4 px-4 capitalize`}
+                type="button"
+              >
+                <img
+                  className="w-5 h-5 text-inherit"
+                  src={courseicon}
+                  alt=""
+                />
+
+                <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
+                  Courses
                 </p>
               </Link>
             </a>

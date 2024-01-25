@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { LoadCourse } from "../../../api/adminApi";
 import ApproveCourse from "./approveCourse";
 
+
 function CourseMange() {
   const [course, setCourse] = useState([]);
   const [isOpn, setOpn] = useState(false);
@@ -14,22 +15,25 @@ function CourseMange() {
 
   useEffect(() => {
     LoadCourse().then((res) => {
-      console.log(res, "rraaaa");
       const newData = res.data.data;
-      console.log(newData, "+++");
       setCourse(newData);
     });
   }, []);
-  console.log(course, "ppoijhgfd");
+
   const courseDatas =
     course &&
     course.filter((course) => {
-      const searchLowerCase = searchInput.toLowerCase();
-      return ["title", "category", "description", "level", "payment"].some(
-        (prop) =>
-          course[prop].toString().toLowerCase().includes(searchLowerCase)
+      return (
+        course.is_varified === "false" &&
+        ["title", "category", "description", "level", "payment"].some((prop) =>
+          course[prop]
+            .toString()
+            .toLowerCase()
+            .includes(searchInput.toLowerCase())
+        )
       );
     });
+
   const exploredata = async (courseId) => {
     setCurrentCourseId(courseId);
     setOpn(true);
@@ -80,7 +84,6 @@ function CourseMange() {
                         Status
                       </p>
                     </th>
-                   
                   </tr>
                 </thead>
                 {
@@ -106,8 +109,7 @@ function CourseMange() {
 
                         <td className="py-3 px-5 border-b border-blue-gray-50">
                           <div className="flex items-center gap-4">
-                            {/* {values.image} */}
-
+                            
                             <img
                               src={values.image}
                               alt="Image"
@@ -167,6 +169,7 @@ function CourseMange() {
           courseId={currentCourseId}
           course={course}
           setCourse={setCourse}
+          setOpn={setOpn}
         />
       )}
     </div>

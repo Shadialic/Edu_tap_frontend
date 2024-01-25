@@ -106,4 +106,14 @@ export async function manageCourse(Course_id) {
     console.log(error);
   }
 }
+export async function getCourse(data) {
+  try {
+ 
+    const response = await AdminApi.get("/getCourse", data);
+    console.log(response, "\\\\\\");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
 

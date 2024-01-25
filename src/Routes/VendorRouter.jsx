@@ -26,6 +26,7 @@ function VendorRouter() {
         <Route path="/" exact element={<VendorHome/>} /> 
         <Route path="/:category" element={<AddForm />} />
 
+
         </Route>
        
     </Routes>
