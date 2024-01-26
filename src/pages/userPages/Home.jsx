@@ -26,7 +26,7 @@ function Home() {
   // }, [cookies, navigate, removeCookie]);
   return (
     <div>
-      <Header />
+      <Header state='Home'/>
       <section>
         <div className="container mx-auto">
           <div className="home-container flex-auto">

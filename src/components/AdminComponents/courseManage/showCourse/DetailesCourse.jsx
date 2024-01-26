@@ -1,29 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { manageCourse } from "../../../api/adminApi";
-import { useDispatch } from "react-redux";
-import { setCourseDetailes } from "../../../Redux/CourseSlice/CourseSlice";
-
-function ApproveCourse({ courseId, course, setOpn }) {
+import { BlockingCourse } from "../../../../api/adminApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+function DetailesCourse({ courseId, course, setOpn }) {
   const [data, setData] = useState([]);
+  const [block, setBlock] = useState(false);
+
   useEffect(() => {
     const filteredData = course.filter((element) => element._id === courseId);
-    console.log(filteredData, "element.id", courseId);
     setData(filteredData);
+    if (filteredData.is_Block == "true") {
+      setBlock(false);
+    } else {
+      setBlock(true);
+    }
   }, [course, courseId]);
-  const allowcourse = async (course_id) => {
-    await manageCourse({ _id: course_id }).then((res) => {
-      setOpn(false);
-    });
+
+  const handleBlock = async (course_id) => {
+    const response = await BlockingCourse({ _id: course_id });
+    toast(response.data.alert);
+    setBlock(true);
   };
-  const denycourse = async (course_id) => {
-      setOpn(false);
+  const handleUnBlock = async (course_id) => {
+    const response = await BlockingCourse({ _id: course_id });
+    toast(response.data.alert);
+    setBlock(false);
   };
+
   return (
     <>
-      <div className="bg-authentication-background bg-cover bg-gray-100 flex justify-center w-screen h-screen py-3 px-3 ">
-        <div className="bg-white w-full h-full sm:max-w-[70%] min-h-[85%] overflow-auto rounded-md flex flex-row items-start shadow-xl p-3 gap-5 ml-64 justify-start ">
+      <div className="bg-authentication-background bg-cover bg-gray-100 flex justify-center w-full h-auto py-3 px-3">
+        <div className="bg-white w-full h-full sm:max-w-full md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl min-h-[85%] overflow-auto rounded-md flex flex-col md:flex-row items-start shadow-xl p-3 gap-5 justify-start">
           {data.map((element) => (
-            <div key={element._id} className="mt-4 text-left w-[60%] shadow-sm">
+            <div
+              key={element._id}
+              className="text-left w-full md:w-[60%] shadow-sm mt-4"
+            >
               <h1 className="text-3xl font-bold ml-6 mt-4 mb-6 gap-10">
                 {element.title}
               </h1>
@@ -69,29 +81,27 @@ function ApproveCourse({ courseId, course, setOpn }) {
                 </h1>
               </div>
               <div className="flex mt-5  items-center gap-6">
-                <div className="w-20 h-10 bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 rounded-lg flex items-center justify-center transition duration-300  ">
-                  <button
-                    onClick={() => denycourse(element._id)}
-                    className="text-white hover:bg-gray-500 w-full h-full"
-                  >
-                    Deny
-                  </button>
-                </div>
-                <div className=" w-20 h-10 bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 rounded-lg flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue-gray-900 focus:bg-blue-gray-900">
-                  <button
-                    onClick={() => allowcourse(element._id)}
-                    className="text-white w-full h-full hover:hover:bg-gray-500"
-                  >
-                    Allow
-                  </button>
-                </div>
+                {!block ? (
+                  <div className="w-20 h-10 bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 rounded-lg flex items-center justify-center transition duration-300  ">
+                    <button onClick={() => handleBlock(element._id)}>
+                      Block
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-20 h-10 bg-gradient-to-tr from-lightBlue-950 to-lightBlue-800 text-white shadow-lightBlue-900/20 rounded-lg flex items-center justify-center transition duration-300  ">
+                    <button onClick={() => handleUnBlock(element._id)}>
+                      UnBlock
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }
 
-export default ApproveCourse;
+export default DetailesCourse;

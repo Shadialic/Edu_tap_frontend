@@ -8,15 +8,13 @@ import Otp from "../components/otp/Otp";
 
 import UserPublic from "./UserPublic";
 import UserLayout from "../pages/userPages/Layout";
+import Profile from "../pages/userPages/Profile";
 
 function UserRouter() {
   return (
     <Routes>
       <Route>
         <Route path="/" exact element={<Home />} />
-        {/* <Route path="/courses" component={Courses} />
-        <Route path="/about" component={About} />
-      <Route path="/blog" component={Blog} /> */}
       </Route>
       <Route
         path="/login"
@@ -28,6 +26,8 @@ function UserRouter() {
       />
       <Route path="/otp" exact element={<Otp />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/profile" element={<Profile />} />
+
     </Routes>
   );
 }

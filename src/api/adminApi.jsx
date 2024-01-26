@@ -108,9 +108,16 @@ export async function manageCourse(Course_id) {
 }
 export async function getCourse(data) {
   try {
- 
     const response = await AdminApi.get("/getCourse", data);
-    console.log(response, "\\\\\\");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function BlockingCourse(course_id) {
+  console.log(course_id);
+  try {
+    const response = await AdminApi.put("/blockCourse", course_id);
     return response;
   } catch (error) {
     console.log(error);

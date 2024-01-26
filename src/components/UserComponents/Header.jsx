@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logoO.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import logoutDetails, { setUserDetailes } from "../../Redux/userSlice/userSlice";
+import logoutDetails, {
+  setUserDetailes,
+} from "../../Redux/userSlice/userSlice";
 
-function Header() {
+function Header({ state }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
-  console.log(user,'poooddddddddd');
-  const userName = user.userName;
-  console.log(userName,'poooddddddddddddddddddd');
 
+  const user = useSelector((state) => state.user);
+  const userName = user.userName;
+  console.log(userName, "sdfga");
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -68,7 +69,9 @@ function Header() {
         <div className="flex flex-row gap-10 absolute right-20 font-prompt">
           {nav_title.map((item) => (
             <h4
-              className="font-prompt-normal hover:cursor-pointer mt-4 hover:text-[#7d0fc6]"
+              className={`font-prompt-normal hover:cursor-pointer mt-4 hover:text-[#7d0fc6] ${
+                state == "Home" ? "text-[#7d0fc6]" : "text-black"
+              }`}
               key={item.display}
             >
               {item.display}
@@ -101,13 +104,13 @@ function Header() {
                   aria-orientation="vertical"
                   aria-labelledby="options-menu"
                 >
-                  <a
-                    href="#"
+                  <Link
+                    to="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#7d0fc6]"
                     role="menuitem"
                   >
                     Profile
-                  </a>
+                  </Link>
                   <a
                     href="#"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#7d0fc6]"

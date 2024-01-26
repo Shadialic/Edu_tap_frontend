@@ -8,7 +8,7 @@ import { CoursrManage, getCategory } from "../../../api/VendorApi";
 function Form() {
   const [payment, setPayment] = useState("free");
   const [level, setLevel] = useState("beginner");
-  const [category, setCategory] = useState("Select a Category");
+  const [category, setCategory] = useState();
   const [categorease, setCategoreas] = useState();
 
   const [formData, setFormData] = useState({
@@ -94,7 +94,7 @@ function Form() {
         <img src={form_img} alt="" />
       </div>
       <div className="p-6 w-3/5">
-        <form className="p-5" onSubmit={handleSubmit}>
+        <form className="p-5" onSubmit={handleSubmit} enctype="multipart/form-data">
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-3xl font-prompt font-semibold leading-7 text-violet-700">
@@ -137,7 +137,7 @@ function Form() {
                       className="block w-full rounded-md border-0 py-1.5 text-lightBlue-950 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     >
                       <option value="free">Free</option>
-                      <option value="price">Price</option>
+                      <option value="price">Premium</option>
                     </select>
                   </div>
                 </div>
@@ -254,7 +254,7 @@ function Form() {
                         <p className="pl-1">or drag and drop</p>
                       </div>
                       <p className="text-xs leading-5 text-gray-600">
-                        PNG, JPG, GIF up to 10MB
+                        PNG, JPG, 
                       </p>
                     </div>
                   </div>
