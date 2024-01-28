@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logoO.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import logoutDetails, {
-  setUserDetailes,
-} from "../../Redux/userSlice/userSlice";
+import { resetState } from "../../Redux/userSlice/userSlice";
 
 function Header({ state }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.user);
-  const userName = user.userName;
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const userName = userInfo.userName;
   console.log(userName, "sdfga");
 
   const toggleDropdown = () => {
@@ -23,11 +21,9 @@ function Header({ state }) {
     navigate("/login");
   };
   const handlelogout = () => {
-    {
-      localStorage.removeItem("token");
-    }
+    localStorage.removeItem("token");
     dispatch(
-      logoutDetails({
+      resetState({
         id: "",
         name: "",
         email: "",
@@ -56,6 +52,10 @@ function Header({ state }) {
     },
   ];
 
+  const navigateTo = (path) => {
+    navigate(path);
+  };
+
   return (
     <div>
       <div className="flex ">
@@ -70,9 +70,10 @@ function Header({ state }) {
           {nav_title.map((item) => (
             <h4
               className={`font-prompt-normal hover:cursor-pointer mt-4 hover:text-[#7d0fc6] ${
-                state == "Home" ? "text-[#7d0fc6]" : "text-black"
+                state === item.display ? "text-[#7d0fc6]" : "text-black"
               }`}
               key={item.display}
+              onClick={() => navigateTo(item.path)}
             >
               {item.display}
             </h4>

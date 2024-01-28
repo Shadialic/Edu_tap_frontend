@@ -1,15 +1,23 @@
+import { persistStore, persistReducer } from "redux-persist";
+import { configureStore } from "@reduxjs/toolkit";
+import storage from 'redux-persist/lib/storage';
+import userSlice from './userSlice/userSlice';
+import  tutorSlice  from "./TutorSlice/tutorSlice";
 
-import { configureStore } from '@reduxjs/toolkit'
 
-import rootReducer from '../Redux/userSlice/userSlice';
-import tutorReducer from './TutorSlice/tutorSlice'
-import courseReducer from './CourseSlice/CourseSlice'
-const store = configureStore({
-     reducer:{
-        user:rootReducer ,
-        tutor:tutorReducer,
-        course:courseReducer
-     } 
-    })
+const persistConfig = {
+    key: 'root',
+    storage,
+};
 
-export default store
+const rootReducer = {
+    user: persistReducer(persistConfig, userSlice),
+    tutor: persistReducer(persistConfig, tutorSlice),
+};
+
+const Store = configureStore({
+    reducer: rootReducer,
+});
+const persistor = persistStore(Store);
+
+export { Store, persistor };

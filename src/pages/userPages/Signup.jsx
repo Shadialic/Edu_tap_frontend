@@ -14,7 +14,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import { FcGoogle } from "react-icons/fc";
-import { setUserDetailes } from "../../Redux/userSlice/userSlice";
+import { setUserDetails } from "../../Redux/userSlice/userSlice";
 
 function Signup() {
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ function Signup() {
             toast(result.data.alert);
             console.log(result);
             dispatch(
-              setUserDetailes({
+              setUserDetails({
                 userName: result.data.userName,
                 email: result.data.email,
                 role: "user",
@@ -120,6 +120,17 @@ function Signup() {
           if (res.status === 201) {
             const dataOtp = { email: formData.credential };
             const tutorOtp = UserSendingOtp(dataOtp).then((res) => {
+              
+              // dispatch(
+              //   setUserDetails({
+              //     id:res.data.saveUserData._id,
+              //     userName: res.data.saveUserData.userName,
+              //     phone: res.data.saveUserData.mobile,
+              //     is_Active: res.data.saveUserData.is_Active,
+              //     email: res.data.saveUserData.email,
+              //     is_Admin: res.data.saveUserData.is_Admin,
+              //   })
+              // );
               console.log(res, "tutorOtp");
               if (res.status === 200) {
                 navigate("/otp", { state: { type: "user" } });

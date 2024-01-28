@@ -3,7 +3,6 @@ import Sidebar from "../../components/AdminComponents/Sidebar";
 import Navbar from "../../components/AdminComponents/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { logoutDetails } from "../../Redux/userSlice/userSlice";
 import { useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

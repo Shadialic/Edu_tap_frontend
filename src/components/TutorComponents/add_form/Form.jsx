@@ -6,8 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { CoursrManage, getCategory } from "../../../api/VendorApi";
 
 function Form() {
-  const [payment, setPayment] = useState("free");
-  const [level, setLevel] = useState("beginner");
+  const [payment, setPayment] = useState();
+  const [level, setLevel] = useState();
   const [category, setCategory] = useState();
   const [categorease, setCategoreas] = useState();
 
@@ -38,7 +38,7 @@ function Form() {
     setFormData({
       ...formData,
       price: name === "price" ? value : formData.price,
-      category: name === "Category" ? value : formData.category,
+      category: name === "category" ? value : formData.category,
       level: name === "level" ? value : formData.level,
       payment: name === "payment" ? value : formData.payment,
       [name]: value,
@@ -94,7 +94,11 @@ function Form() {
         <img src={form_img} alt="" />
       </div>
       <div className="p-6 w-3/5">
-        <form className="p-5" onSubmit={handleSubmit} enctype="multipart/form-data">
+        <form
+          className="p-5"
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+        >
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-3xl font-prompt font-semibold leading-7 text-violet-700">
@@ -193,10 +197,7 @@ function Form() {
                     >
                       {categorease &&
                         categorease.map((item) => (
-                          <option
-                            key={item}
-                            value={item}
-                          >
+                          <option key={item} value={item}>
                             {item}
                           </option>
                         ))}
@@ -238,13 +239,13 @@ function Form() {
                     <div className="text-center">
                       <div className="mt-4 flex text-sm leading-6 text-gray-600">
                         <label
-                          htmlFor="file-upload"
+                          htmlFor="image"
                           className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                         >
                           <span>Upload a file</span>
                           <input
-                            id="file-upload"
-                            name="file-upload"
+                            id="image"
+                            name="image"
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
@@ -254,7 +255,7 @@ function Form() {
                         <p className="pl-1">or drag and drop</p>
                       </div>
                       <p className="text-xs leading-5 text-gray-600">
-                        PNG, JPG, 
+                        PNG, JPG,
                       </p>
                     </div>
                   </div>

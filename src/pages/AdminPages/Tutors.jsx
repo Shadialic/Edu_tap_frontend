@@ -162,7 +162,7 @@ console.log(tutor,'==========================================,,,,,,,,,,,,,,,,,,,
                       <div className="flex items-center gap-4">
                         
                         {/* <img src={values.image} alt="Image" className="w-10 h-10" /> */}
-                        <img src='public\images\1705919608219-Add files-bro.png' alt="Image" className="w-10 h-10" />
+                        <img className="w-24 h-16" src={values.image} alt="" />
                       </div>
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">

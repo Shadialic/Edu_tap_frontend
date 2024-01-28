@@ -28,8 +28,8 @@ function DisplayCourse() {
   };
   return (
     <>
-      {!isOpn ? (
-        <div className="flex flex-row gap-16">
+         {!isOpn ? (
+        <div className="flex flex-wrap gap-16">
           {course.map((item) => (
             <div
               key={item.id}
@@ -42,7 +42,7 @@ function DisplayCourse() {
                 <img
                   src={item.image}
                   alt="profile-picture"
-                  className="object-cover w-[100%] h-full"
+                  className="object-cover w-full h-full"
                 />
               </div>
               <div className="p-6 text-center">

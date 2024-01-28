@@ -4,7 +4,7 @@ import Navbar from "../../components/AdminComponents/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BlockUnblockuser, LoadUserList } from "../../api/adminApi";
-import { logoutDetails } from "../../Redux/userSlice/userSlice";
+import { resetState } from "../../Redux/userSlice/userSlice";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
@@ -37,7 +37,7 @@ function Users() {
       localStorage.removeItem("token");
 
       dispatch(
-        logoutDetails({
+        resetState({
           id: "",
           name: "",
           email: "",

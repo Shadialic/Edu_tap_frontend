@@ -148,7 +148,7 @@ function Tutors() {
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">
                       <div className="flex items-center gap-4">
-                        <img src={values.image} alt="" />
+                        <img className="w-24 h-16" src={values.image} alt="" />
                       </div>
                     </td>
                     <td className="py-3 px-5 border-b border-blue-gray-50">

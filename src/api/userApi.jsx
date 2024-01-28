@@ -121,3 +121,37 @@ export async function userRegisterGoogle(userData) {
     console.log(error);
   }
 }
+export async function getUserData(userData) {
+  try {
+    console.log(userData,'zzz');
+    const response = await UserApi.get("/getUser", userData);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function UpdateProfile(updateData) {
+  try {
+    const response = await UserApi.post("/updateProfile", updateData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function profileuser(userData) {
+  try {
+    console.log(userData,'zzz');
+    const response = await UserApi.get("/manageProfile", { params: userData });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import meta from "../../assets/images/tutor.gif";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { setUserDetailes } from "../../Redux/userSlice/userSlice";
+
 import PropagateLoader from "react-spinners/PropagateLoader";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AdminSignIn } from "../../api/adminApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { resetState } from "../../Redux/userSlice/userSlice";
 
 function VendorLogin() {
   const dispatch=useDispatch();
@@ -47,7 +48,7 @@ function VendorLogin() {
         if (loginResponse.data) {
           localStorage.setItem("admintoken", loginResponse.data.admintoken);
           dispatch(
-            setUserDetailes({
+            resetState({
               id: loginResponse.data.loginData._id,
               userName: loginResponse.data.loginData.userName,
               phone: loginResponse.data.loginData.phone,

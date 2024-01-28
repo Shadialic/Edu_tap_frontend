@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { userLogin, userRegisterGoogle } from "../../api/userApi";
-import { setUserDetailes } from "../../Redux/userSlice/userSlice";
+import { setUserDetails } from "../../Redux/userSlice/userSlice";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,7 +43,7 @@ function LoginForm() {
             toast(result.data.alert);
             console.log(result);
             dispatch(
-              setUserDetailes({
+              setUserDetails({
                 userName: result.data.userName,
                 email: result.data.email,
                 role: "user",
@@ -92,17 +92,18 @@ function LoginForm() {
           credential: formData.credential,
           password: formData.password,
         });
+        console.log(loginResponse.data.userData,'========================>>>loginResponse');
 
         if (loginResponse.data && loginResponse.data.userData) {
           localStorage.setItem("token", loginResponse.data.token);
 
           dispatch(
-            setUserDetailes({
+            setUserDetails({
               id: loginResponse.data.userData._id,
               userName: loginResponse.data.userData.userName,
-              phone: loginResponse.data.userData.mobile,
+              phone: loginResponse.data.userData.phone,
               is_Active: loginResponse.data.userData.is_Active,
-              email: loginResponse.data.userData.credential,
+              email: loginResponse.data.userData.email,
               is_Admin: loginResponse.data.userData.is_Admin,
             })
           );
