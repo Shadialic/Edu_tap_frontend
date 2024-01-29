@@ -153,5 +153,14 @@ export async function profileuser(userData) {
   }
 }
 
+export async function getCourse(newData) {
+  try {
+    console.log(newData,'zzz');
+    const response = await UserApi.get("/getCourse", newData);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 

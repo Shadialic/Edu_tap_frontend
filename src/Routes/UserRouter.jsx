@@ -9,6 +9,7 @@ import Otp from "../components/otp/Otp";
 import UserPublic from "./UserPublic";
 import UserLayout from "../pages/userPages/Layout";
 import Profile from "../pages/userPages/Profile";
+import Course from "../pages/userPages/Course";
 
 function UserRouter() {
   return (
@@ -27,9 +28,12 @@ function UserRouter() {
       <Route path="/otp" exact element={<Otp />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/course" element={<Course />} />
+
 
     </Routes>
   );
 }
 
 export default UserRouter;
+  

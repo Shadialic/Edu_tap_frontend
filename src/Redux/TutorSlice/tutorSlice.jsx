@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const INITIAL_STATE = {
-  userInfo: {},
+  tutorInfo: {},
 };
 
-export const userSlice = createSlice({
+export const tutorSlice = createSlice({
   name: "tutor",
   initialState: INITIAL_STATE,
   reducers: {
     setTutorDetailes: (state, action) => {
-      state.userInfo = action.payload;
+      state.tutorInfo = action.payload;
       console.log(action.payload, "-----------------------------------");
     },
     logoutDetails: (state) => {
@@ -18,6 +18,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setTutorDetailes, logoutDetails } = userSlice.actions;
+export const { setTutorDetailes, logoutDetails } = tutorSlice.actions;
 
-export default userSlice.reducer;
+export default tutorSlice.reducer;

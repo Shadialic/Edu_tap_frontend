@@ -7,6 +7,7 @@ import AddForm from '../components/TutorComponents/add_form/Form'
 import Otp from '../components/otp/Otp';
 import Header from '../components/TutorComponents/tutorLayouts/Header'
 import {Footer} from '../components/TutorComponents/tutorLayouts/Footer'
+import TutorProfile from '../pages/vendorPages/TutorProfile';
 const Lyouts=()=>{
   return(
     <>
@@ -24,6 +25,7 @@ function VendorRouter() {
         <Route path='/otp'  exact element={<Otp/>}/>
         <Route path='/' exact element={<Lyouts/>}>
         <Route path="/" exact element={<VendorHome/>} /> 
+        <Route path="/profile" exact element={<TutorProfile/>} /> 
         <Route path="/:category" element={<AddForm />} />
 
 

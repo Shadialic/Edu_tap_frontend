@@ -92,14 +92,16 @@ function VendorLogin() {
           password: formData.password,
         });
         console.log(loginResponse.data.status,'p-p-p-');
-        if (loginResponse.data.status) {
+        if (loginResponse.data && loginResponse.data.status) {
           localStorage.setItem("token", loginResponse.data.token);
           dispatch(
             setTutorDetailes({
               id: loginResponse.data.tutorData._id,
-              name: loginResponse.data.tutorData.name,
-              phone: loginResponse.data.tutorData.mobile,
+              name: loginResponse.data.tutorData.tutorName,
+              phone: loginResponse.data.tutorData.phone,
               email: loginResponse.data.tutorData.email,
+              image: loginResponse.data.tutorData.image,
+              role:'tutor',
             })
           );
           navigate("/vendor/");

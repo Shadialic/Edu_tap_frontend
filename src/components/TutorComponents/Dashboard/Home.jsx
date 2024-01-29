@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import home_image from "../../../../public/images/tutor/Online world-bro.png";
 import bg from "../../../../public/images/tutor/bg-home.jpg";
 import Form from "../add_form/Form";
+import { useSelector } from "react-redux";
 
 function Home() {
   const [isOpn, SetOpn] = useState(false);
-
+  const tutor = useSelector((state) => state.tutor.tutorInfo);
+  console.log(tutor,'...........');
+  const tutorName = tutor.name;
   const handleCourse = () => {
     SetOpn(true);
   };
@@ -37,7 +40,7 @@ function Home() {
                 </div>
                 <div className="w-full flex flex-col gap-5 sm:px-10 lg:px-0 items-center">
                   <span className="text-md font-medium text-black">
-                    Hi shadilsa786!
+                    Hi {tutorName}!
                   </span>
                   <span className="text-[14px] text-gray-600 font-prompt">
                     Unleash your teaching spark on Edu-tap. Share your

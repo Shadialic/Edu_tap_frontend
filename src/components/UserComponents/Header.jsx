@@ -11,7 +11,7 @@ function Header({ state }) {
 
   const userInfo = useSelector((state) => state.user.userInfo);
   const userName = userInfo.userName;
-  console.log(userName, "sdfga");
+  
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -39,7 +39,7 @@ function Header({ state }) {
       display: "Home",
     },
     {
-      path: "/Courses",
+      path: "/course",
       display: "Courses",
     },
     {
@@ -58,7 +58,7 @@ function Header({ state }) {
 
   return (
     <div>
-      <div className="flex ">
+      <div className="flex shadow-md">
         <div className="flex flex-row items-center">
           <img src={logo} alt="" className="w-18 h-16 ml-3" />
           <h2 className="text-2xl font-prompt font-prompt-normal mt-2  text-[#000000]">

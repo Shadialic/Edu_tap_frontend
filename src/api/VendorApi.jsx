@@ -60,11 +60,13 @@ export async function tutorRegisterGoogle(tutorData) {
 export async function CoursrManage(newData) {
   try {
     console.log(newData, "newData");
-    const response = await TutorApi.post("/vendor/loadCourse", newData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await TutorApi.post("/vendor/loadCourse", newData
+    // , {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // }
+    );
     return response;
   } catch (error) {
     console.log(error);
@@ -74,6 +76,27 @@ export async function CoursrManage(newData) {
 export async function getCategory(category) {
   try {
     const response = await TutorApi.get("/vendor/getCategory", category);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function profiletutor(tutorData) {
+  try {
+    console.log(tutorData,'zzz');
+    const response = await TutorApi.get("/vendor/manageProfile", { params: tutorData });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function UpdateProfile(updateData) {
+  try {
+    const response = await TutorApi.post("/vendor/updateProfile", updateData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     console.log(error);
